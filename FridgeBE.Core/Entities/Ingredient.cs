@@ -1,16 +1,16 @@
-﻿using FridgeBE.Core.Utils;
+﻿using FridgeBE.Core.Entities.Common;
 
 namespace FridgeBE.Core.Entities
 {
     public class Ingredient : AuditableEntity
     {
-        public required string Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public string Image { get; set; }
+        public string? Image { get; set; }
 
     }
 }

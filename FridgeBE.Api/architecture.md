@@ -50,4 +50,6 @@ Compiled queries (DbContext)
 
 Model
 - Fluent API > Data anotation
-- 
+- Default nullable reference types (NRT) enable in Properties Project
+	+ With NRT: `string` -> required property, `string?` -> optional property
+	+ Without NRT: `[Required]` -> required property, default is optional property
