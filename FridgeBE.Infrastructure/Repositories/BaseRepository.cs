@@ -1,4 +1,5 @@
-﻿using FridgeBE.Core.Interfaces.IRepositories;
+﻿using FridgeBE.Core.Entities;
+using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,6 +39,13 @@ namespace FridgeBE.Infrastructure.Repositories
         public Task<T> GetById<Tid>(Tid id)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> Where(Func<T, bool> predicate)
+        {
+            //var compiledQuery = EF.CompileAsyncQuery((ApplicationDbContext context) => context.Set<T>().Where(predicate));
+            Func<ApplicationDbContext, Task<IEnumerable<T>>> compiledQuery = EF.CompileAsyncQuery((ApplicationDbContext _) => _dbSet.Where(predicate));
+            return compiledQuery.Invoke(_dbContext);
         }
 
         public Task<IReadOnlyList<T>> GetPaginatedData()

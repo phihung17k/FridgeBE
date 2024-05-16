@@ -11,6 +11,7 @@
     <Folder Include="Interfaces\IMapper\" />
     <Folder Include="Mapper\" />
     <Folder Include="Services\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
 
 </Project>
