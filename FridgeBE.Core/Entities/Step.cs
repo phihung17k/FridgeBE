@@ -1,6 +1,6 @@
 ﻿namespace FridgeBE.Core.Entities
 {
-    public class Phase
+    public class Step
     {
         public string Id { get; set; }
 

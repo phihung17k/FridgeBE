@@ -12,6 +12,8 @@ namespace FridgeBE.Core.Entities
 
         public string? Image { get; set; }
 
-        public List<Phase> Phases { get; set; }
+        public List<Step> Steps { get; set; } = [];
+
+        public List<Ingredient> Ingredients { get; set; } = [];
     }
 }

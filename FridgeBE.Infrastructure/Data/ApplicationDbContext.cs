@@ -16,6 +16,9 @@ namespace FridgeBE.Infrastructure.Data
         }
 
         public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<IngredientRecipe> IngredientRecipes { get; set; }
+        public DbSet<Step> Steps { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -66,6 +69,10 @@ namespace FridgeBE.Infrastructure.Data
 
                 // case DateTimeOffset can't convert to mysql, using value converter
                 //i.Property(i => i.CreateTime);
+
+                //i.HasMany(i => i.Recipes)
+                //.WithMany(r => r.Ingredients)
+                //.UsingEntity<IngredientRecipe>();
             });
         }
     }

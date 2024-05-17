@@ -12,5 +12,6 @@ namespace FridgeBE.Core.Entities
 
         public string? Image { get; set; }
 
+        public List<Recipe> Recipes { get; set; } = [];
     }
 }
