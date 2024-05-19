@@ -9,6 +9,7 @@
 # https://github.com/docker/awesome-compose
 services:
   server:
+    image: server
     build:
       context: .
       target: final
@@ -23,31 +24,38 @@ services:
 # to set the database password. You must create `db/password.txt` and add
 # a password of your choosing to it before running `docker compose up`.
     depends_on:
-      db:
-        condition: service_healthy
+      - db
+    # networks:
+    #   - fridge-net
   db:
     image: mysql
     restart: always
+    container_name: test-mysql
     # user: postgres
-    secrets:
-      - db-password
+    # secrets:
+    #   - db-password
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - ./test-mysql:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=fridge
       - MYSQL_ROOT_PASSWORD=my-secret-pw
-    expose:
-      - 5432
+    # expose:
+    #   - 5432
     ports:
       - 57779:3306
-    healthcheck:
-      test: [ "CMD", "pg_isready" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # healthcheck:
+    #   test: [ "CMD", "pg_isready" ]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+    # networks:
+    #   - fridge-net
 volumes:
-  db-data:
-secrets:
-  db-password:
-    file: db/password.txt
+  test-mysql:
+# secrets:
+#   db-password:
+#     file: db/password.txt
+# networks:
+#   fridge-net:
+#     driver: bridge
 
