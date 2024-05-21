@@ -13,20 +13,21 @@ services:
     build:
       context: .
       target: final
+    container_name: fridgebe-server-1
     ports:
       - 5091:5091
-      - 7160:7160
+      # - 7160:7160
 
-# The commented out section below is an example of how to define a PostgreSQL
-# database that your application can use. `depends_on` tells Docker Compose to
-# start the database before your application. The `db-data` volume persists the
-# database data between container restarts. The `db-password` secret is used
-# to set the database password. You must create `db/password.txt` and add
-# a password of your choosing to it before running `docker compose up`.
+    # The commented out section below is an example of how to define a PostgreSQL
+    # database that your application can use. `depends_on` tells Docker Compose to
+    # start the database before your application. The `db-data` volume persists the
+    # database data between container restarts. The `db-password` secret is used
+    # to set the database password. You must create `db/password.txt` and add
+    # a password of your choosing to it before running `docker compose up`.
     depends_on:
       - db
-    # networks:
-    #   - fridge-net
+    networks:
+      - fridge-net
   db:
     image: mysql
     restart: always
@@ -38,7 +39,8 @@ services:
       - ./test-mysql:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=fridge
-      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_USER=root 
+      - MYSQL_PASSWORD=my-secret-pw
     # expose:
     #   - 5432
     ports:
@@ -48,14 +50,13 @@ services:
     #   interval: 10s
     #   timeout: 5s
     #   retries: 5
-    # networks:
-    #   - fridge-net
+    networks:
+      - fridge-net
 volumes:
   test-mysql:
 # secrets:
 #   db-password:
 #     file: db/password.txt
-# networks:
-#   fridge-net:
-#     driver: bridge
-
+networks:
+  fridge-net:
+    driver: bridge

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FridgeBE.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240517065808_InitialSchema")]
+    [Migration("20240521152804_InitialSchema")]
     partial class InitialSchema
     {
         /// <inheritdoc />

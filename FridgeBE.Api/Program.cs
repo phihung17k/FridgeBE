@@ -1,3 +1,4 @@
+using FridgeBE.Api;
 using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -22,28 +23,9 @@ using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+Startup _startup = new Startup(builder.Configuration);
 
-builder.Services.AddControllers();
-builder.Services.AddHttpContextAccessor();
-
-//builder.Services.AddDbContextPool<ApplicationDbContext>(option =>
-builder.Services.AddDbContext<ApplicationDbContext>(option =>
-{
-    option.UseMySql(ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Fridge")), sqlOptionsBuilder =>
-    {
-        //sqlOptionsBuilder.EnableRetryOnFailure();
-        //sqlOptionsBuilder.MigrationsAssembly("FridgeBE.Infrastructure");
-    });
-    option.UseLoggerFactory(LoggerFactory.Create(configure => configure.AddConsole()));
-    option.LogTo(Console.WriteLine, LogLevel.Debug, DbContextLoggerOptions.DefaultWithLocalTime);
-    option.EnableSensitiveDataLogging();
-    option.EnableDetailedErrors();
-});
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+_startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 

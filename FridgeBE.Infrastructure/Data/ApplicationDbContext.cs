@@ -20,7 +20,7 @@ namespace FridgeBE.Infrastructure.Data
         public DbSet<IngredientRecipe> IngredientRecipes { get; set; }
         public DbSet<Step> Steps { get; set; }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entries = ChangeTracker.Entries<AuditableEntity>();
             foreach (EntityEntry<AuditableEntity> entityEntry in entries)
@@ -50,7 +50,7 @@ namespace FridgeBE.Infrastructure.Data
                 }
             }
 
-            return base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(cancellationToken);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
