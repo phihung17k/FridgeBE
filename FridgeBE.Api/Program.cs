@@ -2,10 +2,14 @@ using FridgeBE.Api;
 using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using System.Diagnostics;
 
-//MySqlConnection MyCon = new MySqlConnection("Server=localhost;Port=57779;Database=fridge;Uid=root;Pwd=my-secret-pw;");
+
+var builder = WebApplication.CreateBuilder(args);
+
+//MySqlConnection MyCon = new MySqlConnection(builder.Configuration.GetConnectionString("Fridge"));
 
 //try
 //{
@@ -20,8 +24,6 @@ using System.Diagnostics;
 //    Debug.WriteLine("aaaaaaaaaaaaaaaaa -");
 //    Debug.WriteLine(ex.Message);
 //}
-
-var builder = WebApplication.CreateBuilder(args);
 
 Startup _startup = new Startup(builder.Configuration);
 

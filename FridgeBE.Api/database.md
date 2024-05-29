@@ -2,6 +2,9 @@
 - `docker run --name test-mysql -p 57779:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag`
 - host port : container port
 
+run container with volume
+- `docker run --name test-mysql -dp 57779:3306 --mount type=volume,src=vol-mysql,target=/etc/todos -e MYSQL_ROOT_PASSWORD=my-secret-pw mysql`
+
 start stop container
 - `docker start/stop [container]`
 
