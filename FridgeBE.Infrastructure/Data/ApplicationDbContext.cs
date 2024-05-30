@@ -1,5 +1,6 @@
 ﻿using FridgeBE.Core.Entities;
 using FridgeBE.Core.Entities.Common;
+using FridgeBE.Infrastructure.Data.EntityConfiguration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -62,8 +63,16 @@ namespace FridgeBE.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Ingredient>(i =>
-            {
+            new IngredientConfiguration().Configure(modelBuilder.Entity<Ingredient>());
+
+            new RecipeConfiguration().Configure(modelBuilder.Entity<Recipe>());
+
+            new IngredientRecipeConfiguration().Configure(modelBuilder.Entity<IngredientRecipe>());
+
+            new StepConfiguration().Configure(modelBuilder.Entity<Step>());
+
+            //modelBuilder.Entity<Ingredient>(i =>
+            //{
                 // default database set up to be an IDENTITY, else try using [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
                 //i.Property(i => i.Id);
 
@@ -73,7 +82,7 @@ namespace FridgeBE.Infrastructure.Data
                 //i.HasMany(i => i.Recipes)
                 //.WithMany(r => r.Ingredients)
                 //.UsingEntity<IngredientRecipe>();
-            });
+            //});
         }
     }
 }

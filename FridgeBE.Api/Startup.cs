@@ -19,19 +19,17 @@ namespace FridgeBE.Api
             services.AddControllers();
             services.AddHttpContextAccessor();
 
-            //services.AddDbContextPool<ApplicationDbContext>(option =>
-            services.AddDbContext<ApplicationDbContext>(option =>
+            services.AddDbContextPool<ApplicationDbContext>(option =>
+            //services.AddDbContext<ApplicationDbContext>(option =>
             {
                 option.UseMySql(Configuration.GetConnectionString("Fridge"), ServerVersion.Parse("8.4.0"), sqlOptionsBuilder =>
                 {
-                    //sqlOptionsBuilder.EnableRetryOnFailure(maxRetryCount: 1);
-                    //sqlOptionsBuilder.
-                    //sqlOptionsBuilder.MigrationsAssembly("FridgeBE.Infrastructure");
+                    sqlOptionsBuilder.EnableRetryOnFailure(maxRetryCount: 2);
                 });
-                //option.UseLoggerFactory(LoggerFactory.Create(configure => configure.AddConsole()));
-                //option.LogTo(Console.WriteLine, LogLevel.Debug, DbContextLoggerOptions.DefaultWithLocalTime);
-                //option.EnableSensitiveDataLogging();
-                //option.EnableDetailedErrors();
+                option.UseLoggerFactory(LoggerFactory.Create(configure => configure.AddConsole()));
+                option.LogTo(Console.WriteLine, LogLevel.Debug, DbContextLoggerOptions.DefaultWithLocalTime);
+                option.EnableSensitiveDataLogging();
+                option.EnableDetailedErrors();
             });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

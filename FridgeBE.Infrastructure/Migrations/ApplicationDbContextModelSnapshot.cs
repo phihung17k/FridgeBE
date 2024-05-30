@@ -59,7 +59,7 @@ namespace FridgeBE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ingredients");
+                    b.ToTable("ingredient", (string)null);
                 });
 
             modelBuilder.Entity("FridgeBE.Core.Entities.IngredientRecipe", b =>
@@ -78,7 +78,11 @@ namespace FridgeBE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IngredientRecipes");
+                    b.HasIndex("IngredientId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("ingredientrecipe", (string)null);
                 });
 
             modelBuilder.Entity("FridgeBE.Core.Entities.Recipe", b =>
@@ -118,7 +122,7 @@ namespace FridgeBE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Recipes");
+                    b.ToTable("recipe", (string)null);
                 });
 
             modelBuilder.Entity("FridgeBE.Core.Entities.Step", b =>
@@ -137,48 +141,31 @@ namespace FridgeBE.Infrastructure.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("Steps");
+                    b.ToTable("step", (string)null);
                 });
 
-            modelBuilder.Entity("IngredientRecipe", b =>
+            modelBuilder.Entity("FridgeBE.Core.Entities.IngredientRecipe", b =>
                 {
-                    b.Property<Guid>("IngredientsId")
-                        .HasColumnType("char(36)");
+                    b.HasOne("FridgeBE.Core.Entities.Ingredient", null)
+                        .WithMany()
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<Guid>("RecipesId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("IngredientsId", "RecipesId");
-
-                    b.HasIndex("RecipesId");
-
-                    b.ToTable("IngredientRecipe");
+                    b.HasOne("FridgeBE.Core.Entities.Recipe", null)
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FridgeBE.Core.Entities.Step", b =>
                 {
                     b.HasOne("FridgeBE.Core.Entities.Recipe", "Recipe")
                         .WithMany("Steps")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RecipeId");
 
                     b.Navigation("Recipe");
-                });
-
-            modelBuilder.Entity("IngredientRecipe", b =>
-                {
-                    b.HasOne("FridgeBE.Core.Entities.Ingredient", null)
-                        .WithMany()
-                        .HasForeignKey("IngredientsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FridgeBE.Core.Entities.Recipe", null)
-                        .WithMany()
-                        .HasForeignKey("RecipesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("FridgeBE.Core.Entities.Recipe", b =>

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FridgeBE.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialSchema : Migration
+    public partial class InitialDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,22 +16,7 @@ namespace FridgeBE.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "IngredientRecipes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    IngredientId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    RecipeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_IngredientRecipes", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Ingredients",
+                name: "ingredient",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
@@ -53,12 +38,12 @@ namespace FridgeBE.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ingredients", x => x.Id);
+                    table.PrimaryKey("PK_ingredient", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Recipes",
+                name: "recipe",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
@@ -80,37 +65,39 @@ namespace FridgeBE.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Recipes", x => x.Id);
+                    table.PrimaryKey("PK_recipe", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "IngredientRecipe",
+                name: "ingredientrecipe",
                 columns: table => new
                 {
-                    IngredientsId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    RecipesId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IngredientId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    RecipeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IngredientRecipe", x => new { x.IngredientsId, x.RecipesId });
+                    table.PrimaryKey("PK_ingredientrecipe", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_IngredientRecipe_Ingredients_IngredientsId",
-                        column: x => x.IngredientsId,
-                        principalTable: "Ingredients",
+                        name: "FK_ingredientrecipe_ingredient_IngredientId",
+                        column: x => x.IngredientId,
+                        principalTable: "ingredient",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_IngredientRecipe_Recipes_RecipesId",
-                        column: x => x.RecipesId,
-                        principalTable: "Recipes",
+                        name: "FK_ingredientrecipe_recipe_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "recipe",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Steps",
+                name: "step",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
@@ -121,24 +108,28 @@ namespace FridgeBE.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Steps", x => x.Id);
+                    table.PrimaryKey("PK_step", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Steps_Recipes_RecipeId",
+                        name: "FK_step_recipe_RecipeId",
                         column: x => x.RecipeId,
-                        principalTable: "Recipes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "recipe",
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IngredientRecipe_RecipesId",
-                table: "IngredientRecipe",
-                column: "RecipesId");
+                name: "IX_ingredientrecipe_IngredientId",
+                table: "ingredientrecipe",
+                column: "IngredientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Steps_RecipeId",
-                table: "Steps",
+                name: "IX_ingredientrecipe_RecipeId",
+                table: "ingredientrecipe",
+                column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_step_RecipeId",
+                table: "step",
                 column: "RecipeId");
         }
 
@@ -146,19 +137,16 @@ namespace FridgeBE.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "IngredientRecipe");
+                name: "ingredientrecipe");
 
             migrationBuilder.DropTable(
-                name: "IngredientRecipes");
+                name: "step");
 
             migrationBuilder.DropTable(
-                name: "Steps");
+                name: "ingredient");
 
             migrationBuilder.DropTable(
-                name: "Ingredients");
-
-            migrationBuilder.DropTable(
-                name: "Recipes");
+                name: "recipe");
         }
     }
 }
