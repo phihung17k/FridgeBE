@@ -25,7 +25,9 @@ namespace FridgeBE.Api
                 option.UseMySql(Configuration.GetConnectionString("Fridge"), ServerVersion.Parse("8.4.0"), sqlOptionsBuilder =>
                 {
                     sqlOptionsBuilder.EnableRetryOnFailure(maxRetryCount: 2);
+                    sqlOptionsBuilder.MigrationsAssembly(nameof(FridgeBE.Infrastructure));
                 });
+
                 option.UseLoggerFactory(LoggerFactory.Create(configure => configure.AddConsole()));
                 option.LogTo(Console.WriteLine, LogLevel.Debug, DbContextLoggerOptions.DefaultWithLocalTime);
                 option.EnableSensitiveDataLogging();
