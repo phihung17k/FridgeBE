@@ -32,3 +32,4 @@ mysql in migration dotnet
 - Id auto generated in types: `guid, int`
 - `string` is required and `string?` is optional
 - Other Relationships: explicit in configuration
+

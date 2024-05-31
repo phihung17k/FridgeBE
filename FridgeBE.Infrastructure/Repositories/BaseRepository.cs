@@ -36,7 +36,7 @@ namespace FridgeBE.Infrastructure.Repositories
             return await _dbSet.ToListAsync();
         }
 
-        public Task<T> GetById<Tid>(Tid id)
+        public async Task<T> GetById<Tid>(Tid id)
         {
             throw new NotImplementedException();
         }
