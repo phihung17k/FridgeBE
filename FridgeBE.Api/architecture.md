@@ -80,3 +80,71 @@ Load navigation property
 - Explicit: load at a later time, `DbContext.Entry(...)`
 - Lazy: load when navigation property is accessed, `UseLazyLoadingProxies()`
 - Explicit and Lazy load related entities that aren't needed (AVOID)
+
+Split Query
+- Cartesian explosion: huge unintentional data to client (include duplicate) when `Include()` 2 tables at the same level
+	```c#
+		var blogs = ctx.Blogs.Include(b => b.Posts)
+							 .Include(b => b.Contributors).ToList();
+	```
+	- Solution: `Include()` 2 tables aren't at the same level (using `ThenInclude()`)
+	```c#
+		var blogs = ctx.Blogs.Include(b => b.Posts)
+							 .ThenInclude(b => b.Contributors).ToList();
+	```
+- Data duplication: avoid duplication by using `Select()` to get the necessary properties
+	```c#
+		var blogs = ctx.Blogs.Select(b => new
+							{
+								b.Id,
+								b.Name,
+								b.Posts
+							}).ToList();
+	```
+- Split query: avoid the above problems by using `AsSplitQuery()`
+	- Default LINQ `var blogs = ctx.Blogs.Include(b => b.Posts).ToList();` transfer into SQL `Blog LEFT JOIN Posts`
+		```sql
+			SELECT [b].[Id], [b].[Name], [b].[HugeColumn], [p].[Id], [p].[BlogId], [p].[Title]							        FROM [Blogs] AS [b]
+	        LEFT JOIN [Posts] AS [p] ON [b].[Id] = [p].[BlogId]
+	        ORDER BY [b].[Id]
+		```
+	- Using `AsSplitQuery()` in LINQ `var blogs = ctx.Blogs.Include(b => b.Posts).AsSplitQuery().ToList();` equivalent to SQL (self table + `INNER JOIN`)
+		```sql
+			SELECT [b].[BlogId], [b].[OwnerId], [b].[Rating], [b].[Url]
+	        FROM [Blogs] AS [b]
+	        ORDER BY [b].[BlogId]
+
+			SELECT [p].[PostId], [p].[AuthorId], [p].[BlogId], [p].[Content], [p].[Rating], [p].[Title], [b].[BlogId]
+	        FROM [Blogs] AS [b]
+	        INNER JOIN [Posts] AS [p] ON [b].[BlogId] = [p].[BlogId]
+	        ORDER BY [b].[BlogId]
+		```
+	- Using split queru with `Skip/Take`, check carefully `Order` column
+		- Ex: if results are ordered by Date, but multiple results with the same Date => split query get different results
+		- Solution: Order by *unique property* or *combination of properties* (unique required)
+		- Ex solution: use Data and ID
+	- Disadvantages:
+		- No guarantees exist for multiple queries => single querie is more consistent (issue DB is updated concurrently when executing multiple queries)
+		- Need more the additional network to DB => latency to DB is high
+		- Some DB do not support multiple queries => most results must be buffered in memory => increase memory
+		- When `Include()` multiple reference navigations / collection navigations => degrade performance [issue](https://github.com/dotnet/efcore/issues/29182)
+
+Pagination
+- Make sure order is unique
+- Use `Skip` and `Take` (`OFFSET` and `LIMIT` in SQL) (NOT RECOMMEND)
+	- Ex: `ctx.Posts.OrderBy(b => b.PostId).Skip(20).Take(10).ToList()`
+	- Issues:
+		- DB still process the first 20 entries
+		- Wrong results when any updates occur concurrently
+- Keyset pagination
+	- Use `WHERE` to skip rows
+	 ```
+		lastId = 20;
+		ctx.Posts.OrderBy(b => b.PostId).Where(b.PostId > lastId).Take(10).ToList()	 ```	- Issues: Not use in concurrent changes and random access pagination- Multiple pagination keys	- Order by more than 1 property	- Ex: use Date and ID	``` c#		var lastDate = new DateTime(2020, 1, 1);
+		var lastId = 55;
+		var nextPage = context.Posts
+			.OrderBy(b => b.Date)
+			.ThenBy(b => b.PostId)
+			.Where(b => b.Date > lastDate || (b.Date == lastDate && b.PostId > lastId))
+			.Take(10)
+			.ToList();	```- Index
