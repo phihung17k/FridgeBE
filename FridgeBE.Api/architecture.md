@@ -147,4 +147,4 @@ Pagination
 			.ThenBy(b => b.PostId)
 			.Where(b => b.Date > lastDate || (b.Date == lastDate && b.PostId > lastId))
 			.Take(10)
-			.ToList();	```- Index
+			.ToList();	```- Index	- Index speed up query, but slow down updates (they need to be kept up-to-date)	=> Avoid defining index which aren't needed, use [index filters](https://learn.microsoft.com/en-us/ef/core/modeling/indexes#index-filter)	
