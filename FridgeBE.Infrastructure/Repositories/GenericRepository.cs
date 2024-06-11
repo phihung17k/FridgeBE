@@ -128,14 +128,15 @@ namespace FridgeBE.Infrastructure.Repositories
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Pagination<T>> GetPaginationAsync(Expression<Func<T, bool>> predicate, int pageIndex = 0, int pageSize = 10)
+        public async Task<Pagination<T>> GetPaginationAsync(Expression<Func<T, bool>> predicate, int pageIndex = 1, int pageSize = 10)
         {
-            Task<int> itemCountTask = _dbSet.CountAsync();
-            Task<List<T>> itemsTask = _dbSet.Where(predicate)
-                              .Skip(pageIndex * pageSize)
-                              .Take(pageSize)
-                              .AsNoTracking()
-                              .ToListAsync();
+            IQueryable<T> filteredItems = _dbSet.Where(predicate);
+
+            Task<int> itemCountTask = filteredItems.CountAsync();
+            Task<List<T>> itemsTask = filteredItems.Skip((pageIndex - 1) * pageSize)
+                                                   .Take(pageSize)
+                                                   .AsNoTracking()
+                                                   .ToListAsync();
             await Task.WhenAll(itemCountTask, itemsTask);
 
             var result = new Pagination<T>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FridgeBE.Core.Interfaces.IServices
 {
-    internal class ISampleService
+    public class IIngredientService
     {
     }
 }

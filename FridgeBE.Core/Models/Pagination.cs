@@ -1,5 +1,6 @@
 ﻿namespace FridgeBE.Core.Models
 {
+    // reference https://learn.microsoft.com/en-us/aspnet/core/data/ef-rp/sort-filter-page?view=aspnetcore-6.0#create-the-paginatedlist-class
     public class Pagination<T>
     {
         public int TotalItemsCount { get; set; }

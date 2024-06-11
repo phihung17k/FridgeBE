@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Infrastructure.Repositories;
+using FridgeBE.Infrastructure;
 
 namespace FridgeBE.Api
 {
@@ -21,21 +22,7 @@ namespace FridgeBE.Api
             services.AddControllers();
             services.AddHttpContextAccessor();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-
-            services.AddDbContextPool<ApplicationDbContext>(option =>
-            //services.AddDbContext<ApplicationDbContext>(option =>
-            {
-                option.UseMySql(Configuration.GetConnectionString("Fridge"), ServerVersion.Parse("8.4.0"), sqlOptionsBuilder =>
-                {
-                    sqlOptionsBuilder.EnableRetryOnFailure(maxRetryCount: 2);
-                    sqlOptionsBuilder.MigrationsAssembly(nameof(FridgeBE.Infrastructure));
-                });
-
-                option.UseLoggerFactory(LoggerFactory.Create(configure => configure.AddConsole()));
-                option.LogTo(Console.WriteLine, LogLevel.Debug, DbContextLoggerOptions.DefaultWithLocalTime);
-                option.EnableSensitiveDataLogging();
-                option.EnableDetailedErrors();
-            });
+            services.AddInfrastructureServices(Configuration);
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();

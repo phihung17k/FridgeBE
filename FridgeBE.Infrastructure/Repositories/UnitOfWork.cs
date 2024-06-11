@@ -1,4 +1,5 @@
-﻿using FridgeBE.Core.Interfaces.IRepositories;
+﻿using FridgeBE.Core.Entities.Common;
+using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -28,7 +29,7 @@ namespace FridgeBE.Infrastructure.Repositories
             }
         }
 
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(ApplicationDbContext context, params GenericRepository<EntityBase>[] repo)
         {
             _context = context;
         }
