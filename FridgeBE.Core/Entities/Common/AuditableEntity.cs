@@ -1,6 +1,6 @@
 ﻿namespace FridgeBE.Core.Entities.Common
 {
-    public class AuditableEntity
+    public class AuditableEntity : EntityBase
     {
         public DateTimeOffset CreateTime { get; set; }
 

@@ -1,6 +1,8 @@
 ﻿using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using FridgeBE.Core.Interfaces.IRepositories;
+using FridgeBE.Infrastructure.Repositories;
 
 namespace FridgeBE.Api
 {
@@ -18,6 +20,7 @@ namespace FridgeBE.Api
             // Add services to the container.
             services.AddControllers();
             services.AddHttpContextAccessor();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddDbContextPool<ApplicationDbContext>(option =>
             //services.AddDbContext<ApplicationDbContext>(option =>

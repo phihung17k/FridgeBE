@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FridgeBE.Core.Interfaces.IRepositories
 {
-    public interface IIngredientRepository : IBaseRepository<Ingredient>
+    public interface IIngredientRepository : IGenericRepository<Ingredient>
     {
     }
 }

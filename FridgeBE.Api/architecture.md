@@ -9,8 +9,32 @@
 	+ Common operations: adding, removing, finding, sorting, and more
 
 
-Flow: Api - Infrastructure - Core
+Flow: Api (UI) - Infrastructure - Core
 (Controller - Service - Repository)
+
+Core: include the independent components
+- poco entities
+- interface
+- models
+Infrastructure: implement Data access, file systems and database. Interact other components and process data.
+- DbContext
+- Migration
+- File systems
+- Repositories
+- Services
+Api: entry point for application, interact with Infrastructure through interfaces defined in Core (no call directly to Infrastructure)
+- Controller
+- Filters
+- Middlewave
+- Views
+- ViewModels
+
+
+Other architecture:
+- Core: should not have any dependencies.
+- Infrastructure: depends on Core for domain models.
+- Application: depends on Core and might reference Infrastructure for interfaces.
+- Presentation: depends on Application for processing requests.
 
 entity and model
 - Entity: used in repository
@@ -147,4 +171,50 @@ Pagination
 			.ThenBy(b => b.PostId)
 			.Where(b => b.Date > lastDate || (b.Date == lastDate && b.PostId > lastId))
 			.Take(10)
-			.ToList();	```- Index	- Index speed up query, but slow down updates (they need to be kept up-to-date)	=> Avoid defining index which aren't needed, use [index filters](https://learn.microsoft.com/en-us/ef/core/modeling/indexes#index-filter)	
+			.ToList();	```- Index	- Index speed up query, but slow down updates (they need to be kept up-to-date)	=> Avoid defining index which aren't needed, use [index filters](https://learn.microsoft.com/en-us/ef/core/modeling/indexes#index-filter)Save data- Tracked Changes: using `SaveChanges()` (add, update, delete)	- Add:		```c#			var blog = new Blog { Url = "http://example.com" };
+			context.Blogs.Add(blog);
+			context.SaveChanges();
+		```
+	- Update:		```c#			var blog = context.Blogs.Single(b => b.Url == "http://example.com");
+  			blog.Url = "http://example.com/blog";
+			context.SaveChanges();
+		```
+	- Delete:		```c#			var blog = context.Blogs.Single(b => b.Url == "http://example.com/blog");
+  			context.Blogs.Remove(blog);
+			context.SaveChanges();
+		```
+- Untracked Changes: bulk update (update, delete), execute **immediately**
+	- `ExecuteDelete`: delete multiple entities rather than delete one by one with `Remove`
+		```c#			context.Blogs.Where(b => b.Rating < 3).ExecuteDelete();
+		```
+		- Equals 
+			```sql 
+				DELETE FROM [b] 
+				FROM [Blogs] AS [b] 
+				WHERE [b].[Rating] < 3
+			```
+	- `ExecuteUpdate`: update multiple entities, more details [ExecuteUpdate](https://learn.microsoft.com/en-us/ef/core/saving/execute-insert-update-delete#executeupdate)
+		```c#			context.Blogs.Where(b => b.Rating < 3).ExecuteUpdate(setters => setters.SetProperty(b => b.IsVisible, false));
+		```
+		- Equals 
+			```sql 
+				UPDATE [b]
+				SET [b].[IsVisible] = CAST(0 AS bit)
+				FROM [Blogs] AS [b]
+				WHERE [b].[Rating] < 3
+			```
+	- Use `SaveChanges` to persist tracked changes to DB after using `ExecuteDelete` or `ExecuteUpdate`
+		```c#			context.Blogs.Where(b => b.Rating < 3).ExecuteUpdate(setters => setters.SetProperty(b => b.IsVisible, false));
+			context.SaveChanges();
+		```
+	- Transaction: `ExecuteDelete` and `ExecuteUpdate` do not start a transaction. Solution:
+		```c#			using (var transaction = context.Database.BeginTransaction())
+			{
+				context.Blogs.ExecuteUpdate(/* some update */);
+				context.Blogs.ExecuteUpdate(/* another update */);
+
+				...
+			}
+		```
+		- Details: (Using Transactions)[https://learn.microsoft.com/en-us/ef/core/saving/transactions]
+

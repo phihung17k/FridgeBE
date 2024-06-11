@@ -21,22 +21,36 @@ namespace FridgeBE.Infrastructure.Data
         public DbSet<IngredientRecipe> IngredientRecipes { get; set; }
         public DbSet<Step> Steps { get; set; }
 
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public new int SaveChanges(bool forceDelete = false)
         {
-            var entries = ChangeTracker.Entries<AuditableEntity>();
-            foreach (EntityEntry<AuditableEntity> entityEntry in entries)
+            auditEntity(forceDelete);
+            return base.SaveChanges();
+        }
+
+        public new async Task<int> SaveChangesAsync(bool forceDelete = false, CancellationToken cancellationToken = default)
+        {
+            auditEntity(forceDelete);
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void auditEntity(bool forceDelete)
+        {
+            IEnumerable<EntityEntry<AuditableEntity>> entries = ChangeTracker.Entries<AuditableEntity>();
+            foreach (var entityEntry in entries)
             {
                 switch (entityEntry.State)
                 {
-                    //case EntityState.Deleted:
-                    //          entityEntry.Entity.DeleteBy = "usedId";
-                    //          entityEntry.Entity.DeleteTime = DateTimeOffset.Now;
-                    //    break;
                     case EntityState.Modified:
                         if (string.Equals("delete", _accessor.HttpContext.Request.Method, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            entityEntry.Entity.DeleteBy = "usedId";
-                            entityEntry.Entity.DeleteTime = DateTimeOffset.Now;
+                            // log delete action
+                            if (!forceDelete)
+                            {
+                                entityEntry.Entity.DeleteBy = "usedId";
+                                entityEntry.Entity.DeleteTime = DateTimeOffset.Now;
+                                //entityEntry.Entity.GetType().GetProperty("DeleteBy")?.SetValue(entityEntry.Entity, "usedId");
+                                //entityEntry.Entity.GetType().GetProperty("DeleteTime")?.SetValue(entityEntry.Entity, DateTimeOffset.Now);
+                            }
                         }
                         else
                         {
@@ -50,8 +64,6 @@ namespace FridgeBE.Infrastructure.Data
                         break;
                 }
             }
-
-            return await base.SaveChangesAsync(cancellationToken);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -70,19 +82,6 @@ namespace FridgeBE.Infrastructure.Data
             new IngredientRecipeConfiguration().Configure(modelBuilder.Entity<IngredientRecipe>());
 
             new StepConfiguration().Configure(modelBuilder.Entity<Step>());
-
-            //modelBuilder.Entity<Ingredient>(i =>
-            //{
-                // default database set up to be an IDENTITY, else try using [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-                //i.Property(i => i.Id);
-
-                // case DateTimeOffset can't convert to mysql, using value converter
-                //i.Property(i => i.CreateTime);
-
-                //i.HasMany(i => i.Recipes)
-                //.WithMany(r => r.Ingredients)
-                //.UsingEntity<IngredientRecipe>();
-            //});
         }
     }
 }
