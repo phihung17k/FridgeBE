@@ -16,7 +16,7 @@ Core: include the independent components
 - poco entities
 - interface
 - models
-Infrastructure: implement Data access, file systems and database. Interact other components and process data.
+Infrastructure: implement Data access, file systems and database. Interact other components and process data, map entity to model
 - DbContext
 - Migration
 - File systems

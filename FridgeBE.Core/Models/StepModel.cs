@@ -1,10 +1,10 @@
-﻿namespace FridgeBE.Core.Entities
+﻿namespace FridgeBE.Core.Models
 {
-    public class Step
+    public class StepModel
     {
         public string Id { get; set; }
         public string Content { get; set; }
         public Guid RecipeId { get; set; }
-        public Recipe Recipe { get; set; }
+        public RecipeModel Recipe { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace FridgeBE.Infrastructure.Repositories
             }
         }
 
-        public UnitOfWork(ApplicationDbContext context, params GenericRepository<EntityBase>[] repo)
+        public UnitOfWork(ApplicationDbContext context/*, params GenericRepository<EntityBase>[] repo*/)
         {
             _context = context;
         }

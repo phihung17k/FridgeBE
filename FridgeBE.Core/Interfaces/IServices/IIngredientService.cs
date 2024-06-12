@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FridgeBE.Core.Models;
 
 namespace FridgeBE.Core.Interfaces.IServices
 {
-    public class IIngredientService
+    public interface IIngredientService
     {
+        Task<IngredientModel?> GetDetailIngredient(Guid ingredientId);
     }
 }
