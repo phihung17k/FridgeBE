@@ -1,4 +1,5 @@
 using FridgeBE.Api;
+using FridgeBE.Core.Entities;
 using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Console.WriteLine(typeof(Ingredient));
 //MySqlConnection MyCon = new MySqlConnection(builder.Configuration.GetConnectionString("Fridge"));
 
 //try

@@ -1,4 +1,5 @@
-﻿using FridgeBE.Core.Entities.Common;
+﻿using FridgeBE.Core.Entities;
+using FridgeBE.Core.Entities.Common;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -15,23 +16,17 @@ namespace FridgeBE.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context;
         private bool _disposed = false;
-        private IIngredientRepository _ingredientRepository;
         private IDbContextTransaction? _transaction;
-        public IIngredientRepository IngredientRepository
-        {
-            get
-            {
-                if (_ingredientRepository == null)
-                {
-                    _ingredientRepository = new IngredientRepository(_context);
-                }
-                return _ingredientRepository;
-            }
-        }
+
+        private readonly Dictionary<Type, object> _repositoriesLookup;
 
         public UnitOfWork(ApplicationDbContext context/*, params GenericRepository<EntityBase>[] repo*/)
         {
             _context = context;
+            _repositoriesLookup = new()
+            {
+                { typeof(Ingredient), new IngredientRepository(_context) }
+            };
         }
 
         public int Complete()
@@ -144,6 +139,11 @@ namespace FridgeBE.Infrastructure.Repositories
                 await transaction.RollbackAsync(token);
                 //throw TransactionException.TransactionNotExecuteException(ex);
             }
+        }
+
+        public IGenericRepository<T>? Repository<T>() where T : EntityBase
+        {
+            return _repositoriesLookup[typeof(T)] as IGenericRepository<T>;
         }
 
         public void Dispose()

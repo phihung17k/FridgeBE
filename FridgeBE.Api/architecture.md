@@ -21,6 +21,7 @@ Infrastructure: implement Data access, file systems and database. Interact other
 - Migration
 - File systems
 - Repositories
+	- UnitOfWork: make sure that when you use multiple repositories, they share a single database context
 - Services
 Api: entry point for application, interact with Infrastructure through interfaces defined in Core (no call directly to Infrastructure)
 - Controller

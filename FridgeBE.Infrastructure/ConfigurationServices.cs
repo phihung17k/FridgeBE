@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using FridgeBE.Core.Interfaces.IServices;
+using FridgeBE.Infrastructure.Services;
 
 namespace FridgeBE.Infrastructure
 {
@@ -27,6 +29,8 @@ namespace FridgeBE.Infrastructure
                 option.EnableSensitiveDataLogging();
                 option.EnableDetailedErrors();
             });
+
+            services.AddScoped<IIngredientService, IngredientService>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();

@@ -3,6 +3,7 @@ using FridgeBE.Core.Entities;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models;
+using FridgeBE.Infrastructure.Repositories;
 
 namespace FridgeBE.Infrastructure.Services
 {
@@ -19,9 +20,10 @@ namespace FridgeBE.Infrastructure.Services
 
         public async Task<IngredientModel?> GetDetailIngredient(Guid ingredientId)
         {
-            Ingredient? ingredient = await _unitOfWork.IngredientRepository.GetById(ingredientId);
+            IngredientRepository? repo = _unitOfWork.Repository<Ingredient>() as IngredientRepository;
+            Ingredient? ingredient = await repo!.GetById(ingredientId);
 
-            return ingredient == null ? null : _mapper.Map<IngredientModel>(ingredient);
+            return _mapper.Map<IngredientModel>(ingredient);
         }
     }
 }
