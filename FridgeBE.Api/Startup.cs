@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Infrastructure.Repositories;
 using FridgeBE.Infrastructure;
+using FridgeBE.Core;
 
 namespace FridgeBE.Api
 {
@@ -21,7 +22,8 @@ namespace FridgeBE.Api
             // Add services to the container.
             services.AddControllers();
             services.AddHttpContextAccessor();
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.AddCoreServices(Configuration);
             services.AddInfrastructureServices(Configuration);
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

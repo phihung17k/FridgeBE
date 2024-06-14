@@ -11,6 +11,7 @@
 
 Flow: Api (UI) - Infrastructure - Core
 (Controller - Service - Repository)
+(dto - model - entity)
 
 Core: include the independent components
 - poco entities

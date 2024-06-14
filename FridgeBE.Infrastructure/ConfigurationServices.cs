@@ -15,8 +15,8 @@ namespace FridgeBE.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContextPool<ApplicationDbContext>(option =>
-            //services.AddDbContext<ApplicationDbContext>(option =>
+            //services.AddDbContextPool<ApplicationDbContext>(option =>
+            services.AddDbContext<ApplicationDbContext>(option =>
             {
                 option.UseMySql(configuration.GetConnectionString("Fridge"), ServerVersion.Parse("8.4.0"), sqlOptionsBuilder =>
                 {
@@ -30,11 +30,9 @@ namespace FridgeBE.Infrastructure
                 option.EnableDetailedErrors();
             });
 
-            services.AddScoped<IIngredientService, IngredientService>();
-
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IIngredientService, IngredientService>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
-
 
             return services;
         }

@@ -9,6 +9,8 @@ namespace FridgeBE.Core.Mapping
         public AutoMapperProfile() 
         { 
             CreateMap<Ingredient, IngredientModel>().ReverseMap();
+            CreateMap<Recipe, RecipeModel>().ReverseMap();
+            CreateMap<Step, StepModel>().ReverseMap();
         }
     }
 }
