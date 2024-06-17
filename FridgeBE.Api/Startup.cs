@@ -1,9 +1,4 @@
-﻿using FridgeBE.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore;
-using FridgeBE.Core.Interfaces.IRepositories;
-using FridgeBE.Infrastructure.Repositories;
-using FridgeBE.Infrastructure;
+﻿using FridgeBE.Infrastructure;
 using FridgeBE.Core;
 
 namespace FridgeBE.Api

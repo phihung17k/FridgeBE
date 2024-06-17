@@ -1,5 +1,6 @@
 ﻿using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models;
+using FridgeBE.Core.Models.RequestModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FridgeBE.Api.Controllers
@@ -38,9 +39,22 @@ namespace FridgeBE.Api.Controllers
 
         // POST api/<IngredientController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> CreateIngredient([FromForm] IngredientCreationRequest ingredientRequest)
         {
+            // modelstate valid, annotation return error automatically if invalid
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
+            if (ingredientRequest == null)
+            {
+                return BadRequest();
+            }
+
+            IngredientModel ingredient = await _service.CreateIngredient(ingredientRequest);
+
+            return Ok(ingredient);
         }
 
         // PUT api/<IngredientController>/5
