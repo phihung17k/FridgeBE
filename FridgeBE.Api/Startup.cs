@@ -1,5 +1,6 @@
 ﻿using FridgeBE.Infrastructure;
 using FridgeBE.Core;
+using FridgeBE.Infrastructure.Utils;
 
 namespace FridgeBE.Api
 {

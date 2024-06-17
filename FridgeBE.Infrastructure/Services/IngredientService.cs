@@ -5,6 +5,7 @@ using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Infrastructure.Repositories;
+using FridgeBE.Infrastructure.Utils;
 using Microsoft.Extensions.Configuration;
 
 namespace FridgeBE.Infrastructure.Services
@@ -22,9 +23,9 @@ namespace FridgeBE.Infrastructure.Services
             _configuration = configuration;
         }
 
-        public async Task<IngredientModel?> CreateIngredient(IngredientCreationRequest ingredientRequest)
+        public async Task<IngredientModel?> CreateIngredient(IngredientCreationRequest request)
         {
-            if (ingredientRequest.Image != null)
+            if (request.Image != null)
             {
                 string imageFolder = _configuration["AppSettings:ImagesFolder"];
                 string imageFolderPath = Path.Combine(Environment.CurrentDirectory, imageFolder);
@@ -33,7 +34,26 @@ namespace FridgeBE.Infrastructure.Services
                     Directory.CreateDirectory(imageFolderPath);
                 }
 
+                int dotIndex = request.Image.FileName.LastIndexOf(".");
+                string extension = request.Image.FileName.Substring(dotIndex);
+                bool isSupportedFile = FileUtils.ImageExtensions.Contains(extension);
 
+                if (!isSupportedFile)
+                    return null;
+
+                string filePath = Path.Combine(imageFolderPath, request.Image.FileName);
+
+                using (FileStream fileStream = new FileStream(filePath, FileMode.CreateNew))
+                {
+                    await request.Image.CopyToAsync(fileStream);
+
+                    return new IngredientModel
+                    {
+                        Name = request.Name,
+                        Description = request.Description,
+                        Image = Path.GetFullPath(request.Image.FileName)
+                    };
+                }
             }
 
             return null;

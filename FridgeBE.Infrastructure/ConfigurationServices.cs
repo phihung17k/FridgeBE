@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Infrastructure.Services;
+using FridgeBE.Infrastructure.Utils;
 
 namespace FridgeBE.Infrastructure
 {
@@ -33,6 +34,8 @@ namespace FridgeBE.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IIngredientService, IngredientService>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
+
+            ConfigurationUtils.Init(configuration);
 
             return services;
         }

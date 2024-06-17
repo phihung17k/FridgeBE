@@ -1,6 +1,7 @@
 using FridgeBE.Api;
 using FridgeBE.Core.Entities;
 using FridgeBE.Infrastructure.Data;
+using FridgeBE.Infrastructure.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
