@@ -52,7 +52,7 @@ namespace FridgeBE.Api.Controllers
                 return BadRequest();
             }
 
-            IngredientModel ingredient = await _service.CreateIngredient(ingredientRequest);
+            IngredientModel? ingredient = await _service.CreateIngredient(ingredientRequest);
 
             return Ok(ingredient);
         }

@@ -34,9 +34,6 @@ namespace FridgeBE.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IIngredientService, IngredientService>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
-
-            ConfigurationUtils.Init(configuration);
-
             return services;
         }
     }

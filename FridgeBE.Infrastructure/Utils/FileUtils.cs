@@ -1,4 +1,6 @@
-﻿namespace FridgeBE.Infrastructure.Utils
+﻿using Microsoft.AspNetCore.Http;
+
+namespace FridgeBE.Infrastructure.Utils
 {
     public class FileUtils
     {
@@ -23,5 +25,18 @@
         };
 
         public static List<string> ImageExtensions = _imageExtensions;
+
+        public static bool ValidateFileType(IFormFile file)
+        {
+            // check supported content type
+            if (file.ContentType.Contains("image"))
+            {
+                // check extension
+                string extension = Path.GetExtension(file.FileName);
+                return _imageExtensions.Contains(extension);
+            }
+
+            return false;
+        }
     }
 }

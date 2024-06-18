@@ -27,21 +27,21 @@ namespace FridgeBE.Infrastructure.Services
         {
             if (request.Image != null)
             {
-                string imageFolder = _configuration["AppSettings:ImagesFolder"];
-                string imageFolderPath = Path.Combine(Environment.CurrentDirectory, imageFolder);
+                string imageFolderPath = Path.Combine(Environment.CurrentDirectory, _configuration["ExternalFilePath:ImageFolder"]!);
                 if (!Directory.Exists(imageFolderPath))
                 {
                     Directory.CreateDirectory(imageFolderPath);
                 }
 
-                int dotIndex = request.Image.FileName.LastIndexOf(".");
-                string extension = request.Image.FileName.Substring(dotIndex);
-                bool isSupportedFile = FileUtils.ImageExtensions.Contains(extension);
+                bool isValidFileType = FileUtils.ValidateFileType(request.Image);
 
-                if (!isSupportedFile)
+                if (!isValidFileType)
                     return null;
 
-                string filePath = Path.Combine(imageFolderPath, request.Image.FileName);
+                //string filteredFileName = Path.GetInvalidFileNameChars().Aggregate(request.Image.FileName, (fileName, invalidChar) => fileName.Replace(invalidChar.ToString(), string.Empty));
+                string fileName = Path.GetRandomFileName();
+                fileName = Path.ChangeExtension(fileName, Path.GetExtension(request.Image.FileName));
+                string filePath = Path.Combine(imageFolderPath, fileName);
 
                 using (FileStream fileStream = new FileStream(filePath, FileMode.CreateNew))
                 {
@@ -51,7 +51,7 @@ namespace FridgeBE.Infrastructure.Services
                     {
                         Name = request.Name,
                         Description = request.Description,
-                        Image = Path.GetFullPath(request.Image.FileName)
+                        Image = Path.GetFullPath(filePath)
                     };
                 }
             }
