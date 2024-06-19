@@ -25,44 +25,28 @@ namespace FridgeBE.Infrastructure.Services
 
         public async Task<IngredientModel?> CreateIngredient(IngredientCreationRequest request)
         {
+            string filePath = string.Empty;
             if (request.Image != null)
             {
-                string imageFolderPath = Path.Combine(Environment.CurrentDirectory, _configuration["ExternalFilePath:ImageFolder"]!);
-                if (!Directory.Exists(imageFolderPath))
-                {
-                    Directory.CreateDirectory(imageFolderPath);
-                }
-
-                bool isValidFileType = FileUtils.ValidateFileType(request.Image);
-
-                if (!isValidFileType)
-                    return null;
-
-                //string filteredFileName = Path.GetInvalidFileNameChars().Aggregate(request.Image.FileName, (fileName, invalidChar) => fileName.Replace(invalidChar.ToString(), string.Empty));
-                string fileName = Path.GetRandomFileName();
-                fileName = Path.ChangeExtension(fileName, Path.GetExtension(request.Image.FileName));
-                string filePath = Path.Combine(imageFolderPath, fileName);
-
-                using (FileStream fileStream = new FileStream(filePath, FileMode.CreateNew))
-                {
-                    await request.Image.CopyToAsync(fileStream);
-
-                    return new IngredientModel
-                    {
-                        Name = request.Name,
-                        Description = request.Description,
-                        Image = Path.GetFullPath(filePath)
-                    };
-                }
+                filePath = await FileUtils.UploadFile(request.Image, _configuration["ExternalFilePath:ImageFolder"]!);
             }
 
-            return null;
+            var ingredient = new Ingredient
+            {
+                Name = request.Name,
+                Description = request.Description,
+                ImageUrl = filePath
+            };
+
+            IngredientRepository? repository = _unitOfWork.Repository<Ingredient>() as IngredientRepository;
+            await repository!.CreateAsync(ingredient);
+            return _mapper.Map<IngredientModel>(ingredient);
         }
 
         public async Task<IngredientModel?> GetDetailIngredient(Guid ingredientId)
         {
-            IngredientRepository? repo = _unitOfWork.Repository<Ingredient>() as IngredientRepository;
-            Ingredient? ingredient = await repo!.GetById(ingredientId);
+            IngredientRepository? repository = _unitOfWork.Repository<Ingredient>() as IngredientRepository;
+            Ingredient? ingredient = await repository!.GetById(ingredientId);
 
             return _mapper.Map<IngredientModel>(ingredient);
         }
