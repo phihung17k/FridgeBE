@@ -1,6 +1,5 @@
 ﻿using FridgeBE.Infrastructure;
 using FridgeBE.Core;
-using FridgeBE.Infrastructure.Utils;
 
 namespace FridgeBE.Api
 {
@@ -29,6 +28,29 @@ namespace FridgeBE.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Configure the HTTP request pipeline.
+            if (env.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            //app.UseExceptionHandler();
+            //app.UseHsts();
+            //if (!env.IsDevelopment())
+            //{
+            //    app.UseExceptionHandler("/Error");
+            //    app.UseHsts();
+            //}
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
