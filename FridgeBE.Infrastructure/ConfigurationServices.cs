@@ -8,13 +8,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Infrastructure.Services;
-using FridgeBE.Infrastructure.Utils;
 
 namespace FridgeBE.Infrastructure
 {
     public static class ConfigurationServices
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             //services.AddDbContextPool<ApplicationDbContext>(option =>
             services.AddDbContext<ApplicationDbContext>(option =>
@@ -34,7 +33,6 @@ namespace FridgeBE.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IIngredientService, IngredientService>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
-            return services;
         }
     }
 }

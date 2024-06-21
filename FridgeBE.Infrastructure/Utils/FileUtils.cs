@@ -24,7 +24,7 @@ namespace FridgeBE.Infrastructure.Utils
             ".tif",
             ".tiff"
         };
-
+        private static readonly long _fileSizeLimit = 128000000; // 128MB
         public static List<string> ImageExtensions = _imageExtensions;
 
         public static bool ValidateFileExtension(IFormFile file)
@@ -42,7 +42,7 @@ namespace FridgeBE.Infrastructure.Utils
         ///     Upload file to a specific folder, create the folder if it is not exist
         /// </summary>
         /// <returns>Return path to the uploaded file</returns>
-        public static async Task<string> UploadFile(IFormFile file, string folder)
+        public static async Task<string> UploadFile(IFormFile? file, string? folder = "Files")
         {
             // return exception later
             if (file == null)
@@ -57,7 +57,10 @@ namespace FridgeBE.Infrastructure.Utils
 
             string extension = Path.GetExtension(file.FileName);
             if (!ValidateFileExtension(extension))
-                return string.Empty;
+               throw new ArgumentException($"{extension} is not supported");
+
+            if (file.Length > _fileSizeLimit)
+                throw new OutOfMemoryException($"File is too large, limit in 128MB (current ${_fileSizeLimit/Math.Pow(10, 6)})");
 
             string fileName = Path.GetRandomFileName();
             fileName = Path.ChangeExtension(fileName, extension);

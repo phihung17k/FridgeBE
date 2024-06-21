@@ -1,5 +1,6 @@
 ﻿using FridgeBE.Infrastructure;
 using FridgeBE.Core;
+using FridgeBE.Api.Middleware;
 
 namespace FridgeBE.Api
 {
@@ -18,6 +19,8 @@ namespace FridgeBE.Api
             services.AddControllers();
             services.AddHttpContextAccessor();
 
+            //services.AddProblemDetails();
+
             services.AddCoreServices(Configuration);
             services.AddInfrastructureServices(Configuration);
 
@@ -35,7 +38,7 @@ namespace FridgeBE.Api
                 app.UseSwaggerUI();
             }
 
-            //app.UseExceptionHandler();
+            app.ConfigureExceptionHandler(env.IsDevelopment());
             //app.UseHsts();
             //if (!env.IsDevelopment())
             //{
@@ -44,6 +47,8 @@ namespace FridgeBE.Api
             //}
 
             app.UseHttpsRedirection();
+
+            app.UseRouting();
 
             app.UseAuthorization();
 

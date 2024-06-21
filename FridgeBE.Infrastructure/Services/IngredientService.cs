@@ -25,11 +25,7 @@ namespace FridgeBE.Infrastructure.Services
 
         public async Task<IngredientModel?> CreateIngredient(IngredientCreationRequest request)
         {
-            string filePath = string.Empty;
-            if (request.Image != null)
-            {
-                filePath = await FileUtils.UploadFile(request.Image, _configuration["ExternalFilePath:ImageFolder"]!);
-            }
+            string filePath = await FileUtils.UploadFile(request.Image, _configuration["ExternalFilePath:ImageFolder"]);
 
             var ingredient = new Ingredient
             {
