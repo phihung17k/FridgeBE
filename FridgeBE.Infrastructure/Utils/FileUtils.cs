@@ -1,5 +1,7 @@
-﻿using FridgeBE.Core.Models;
+﻿using FridgeBE.Core.Exceptions;
+using FridgeBE.Core.Models;
 using Microsoft.AspNetCore.Http;
+using System.Net;
 
 namespace FridgeBE.Infrastructure.Utils
 {
@@ -57,7 +59,7 @@ namespace FridgeBE.Infrastructure.Utils
 
             string extension = Path.GetExtension(file.FileName);
             if (!ValidateFileExtension(extension))
-               throw new ArgumentException($"{extension} is not supported");
+               throw new RequestException(HttpStatusCode.BadRequest, string.Format(ExceptionMessage.UnsupportFile, extension));
 
             if (file.Length > _fileSizeLimit)
                 throw new OutOfMemoryException($"File is too large, limit in 128MB (current ${_fileSizeLimit/Math.Pow(10, 6)})");

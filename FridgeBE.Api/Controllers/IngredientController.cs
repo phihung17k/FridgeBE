@@ -18,21 +18,19 @@ namespace FridgeBE.Api.Controllers
 
         // GET: api/<IngredientController>
         [HttpGet]
-        public async Task<ActionResult<List<IngredientModel>>> Get()
+        public async Task<ActionResult<IReadOnlyList<IngredientModel>>> Get()
         {
-            
-            return Ok();
+            IReadOnlyList<IngredientModel> results = await _service.GetAll();
+            return Ok(results);
         }
 
         // GET api/<IngredientController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<IngredientModel>> Get(string id)
+        public async Task<ActionResult<IngredientModel>> Get(Guid id)
         {
-            IngredientModel? ingredientModel = await _service.GetDetailIngredient(Guid.Parse(id));
+            IngredientModel? ingredientModel = await _service.GetDetailIngredient(id);
             if (ingredientModel == null)
-            {
                 return NotFound();
-            }
 
             return Ok(ingredientModel);
         }
@@ -59,8 +57,9 @@ namespace FridgeBE.Api.Controllers
 
         // PUT api/<IngredientController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(Guid id, [FromBody] string value)
         {
+
         }
 
         // DELETE api/<IngredientController>/5

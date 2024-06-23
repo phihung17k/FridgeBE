@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
     <Folder Include="Interfaces\IMapper\" />
     <Folder Include="Utils\" />
   </ItemGroup>

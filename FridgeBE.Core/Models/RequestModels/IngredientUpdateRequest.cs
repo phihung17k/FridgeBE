@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FridgeBE.Core.Models.RequestModels
 {
-    public class IngredientCreationRequest
+    public class IngredientUpdateRequest
     {
         [StringLength(50)]
         public string Name { get; set; }

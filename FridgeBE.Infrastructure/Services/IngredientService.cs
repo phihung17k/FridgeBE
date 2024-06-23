@@ -21,7 +21,10 @@ namespace FridgeBE.Infrastructure.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _configuration = configuration;
+            Repository = (_unitOfWork.Repository<Ingredient>() as IngredientRepository)!;
         }
+
+        public IIngredientRepository Repository { get; set; }
 
         public async Task<IngredientModel?> CreateIngredient(IngredientCreationRequest request)
         {
@@ -34,15 +37,19 @@ namespace FridgeBE.Infrastructure.Services
                 ImageUrl = filePath
             };
 
-            IngredientRepository? repository = _unitOfWork.Repository<Ingredient>() as IngredientRepository;
-            await repository!.CreateAsync(ingredient);
+            await Repository.CreateAsync(ingredient);
             return _mapper.Map<IngredientModel>(ingredient);
+        }
+
+        public async Task<IReadOnlyList<IngredientModel>> GetAll()
+        {
+            IReadOnlyList<Ingredient> ingredients = await Repository.GetReadOnlyListAsync();
+            return _mapper.Map<IReadOnlyList<IngredientModel>>(ingredients);
         }
 
         public async Task<IngredientModel?> GetDetailIngredient(Guid ingredientId)
         {
-            IngredientRepository? repository = _unitOfWork.Repository<Ingredient>() as IngredientRepository;
-            Ingredient? ingredient = await repository!.GetById(ingredientId);
+            Ingredient? ingredient = await Repository.GetById(ingredientId);
 
             return _mapper.Map<IngredientModel>(ingredient);
         }

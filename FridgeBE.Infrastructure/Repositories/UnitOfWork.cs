@@ -3,12 +3,6 @@ using FridgeBE.Core.Entities.Common;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
 namespace FridgeBE.Infrastructure.Repositories
 {
@@ -20,10 +14,10 @@ namespace FridgeBE.Infrastructure.Repositories
 
         private readonly Dictionary<Type, object> _repositoriesLookup;
 
-        public UnitOfWork(ApplicationDbContext context/*, params GenericRepository<EntityBase>[] repo*/)
+        public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
-            _repositoriesLookup = new()
+            _repositoriesLookup = new Dictionary<Type, object>
             {
                 { typeof(Ingredient), new IngredientRepository(_context) }
             };
@@ -55,11 +49,11 @@ namespace FridgeBE.Infrastructure.Repositories
             try
             {
                 _context.SaveChanges();
-                _transaction.Commit();
+                _transaction!.Commit();
             }
             finally
             {
-                _transaction.Dispose();
+                _transaction!.Dispose();
                 _transaction = null;
             }
         }
@@ -74,11 +68,11 @@ namespace FridgeBE.Infrastructure.Repositories
             try
             {
                 await _context.SaveChangesAsync(token);
-                _transaction.Commit();
+                _transaction!.Commit();
             }
             finally
             {
-                _transaction.Dispose();
+                _transaction!.Dispose();
                 _transaction = null;
             }
         }
@@ -91,7 +85,7 @@ namespace FridgeBE.Infrastructure.Repositories
                 //throw TransactionException.TransactionNotCommitException();
             }
 
-            _transaction.Rollback();
+            _transaction!.Rollback();
             _transaction.Dispose();
             _transaction = null;
         }
@@ -103,7 +97,7 @@ namespace FridgeBE.Infrastructure.Repositories
                 //throw TransactionException.TransactionNotCommitException();
             }
 
-            await _transaction.RollbackAsync();
+            await _transaction!.RollbackAsync();
             _transaction.Dispose();
             _transaction = null;
         }
@@ -118,7 +112,7 @@ namespace FridgeBE.Infrastructure.Repositories
                 await _context.SaveChangesAsync(token);
                 await transaction.CommitAsync(token);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await transaction.RollbackAsync(token);
                 //throw TransactionException.TransactionNotExecuteException(ex);
@@ -134,7 +128,7 @@ namespace FridgeBE.Infrastructure.Repositories
                 await _context.SaveChangesAsync(token);
                 await transaction.CommitAsync(token);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await transaction.RollbackAsync(token);
                 //throw TransactionException.TransactionNotExecuteException(ex);

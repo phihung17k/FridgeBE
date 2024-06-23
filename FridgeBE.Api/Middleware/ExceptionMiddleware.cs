@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using FridgeBE.Core.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -11,17 +12,24 @@ namespace FridgeBE.Api.Middleware
     {
         public static void ConfigureExceptionHandler(this IApplicationBuilder app, bool isDevelopment)
         {
-            app.UseExceptionHandler(exceptionHandlerApp =>
+            app.UseExceptionHandler(new ExceptionHandlerOptions
             {
-                exceptionHandlerApp.Run(async context =>
+                AllowStatusCode404Response = true,
+                ExceptionHandler = async context =>
                 {
-                    context.Response.ContentType = Application.Json;
+                    HttpResponse response = context.Response;
+                    response.ContentType = Application.Json;
 
-                    var exceptionHandlerFeature = context.Features.GetRequiredFeature<IExceptionHandlerPathFeature>();
+                    IExceptionHandlerPathFeature exceptionHandlerFeature = context.Features.GetRequiredFeature<IExceptionHandlerPathFeature>();
                     Exception exception = exceptionHandlerFeature.Error;
 
-                    int statusCode = context.Response.StatusCode;
-                    string title = ReasonPhrases.GetReasonPhrase(statusCode);
+                    if (exceptionHandlerFeature.Error is RequestException _exception)
+                    {
+                        // default 500
+                        response.StatusCode = (int)_exception.StatusCode;
+                    }
+
+                    string title = ReasonPhrases.GetReasonPhrase(response.StatusCode);
                     if (string.IsNullOrEmpty(title))
                     {
                         title = "Unknown";
@@ -30,7 +38,7 @@ namespace FridgeBE.Api.Middleware
                     var problemDetails = new ProblemDetails
                     {
                         Title = title,
-                        Status = statusCode,
+                        Status = response.StatusCode,
                         Detail = exception.Message,
                     };
 
@@ -43,8 +51,8 @@ namespace FridgeBE.Api.Middleware
                             { "stackTrace", exception.StackTrace },
                         };
                     }
-                    await context.Response.WriteAsync(JsonSerializer.Serialize(problemDetails));
-                });
+                    await response.WriteAsync(JsonSerializer.Serialize(problemDetails));
+                }
             });
         }
     }
