@@ -6,7 +6,7 @@ namespace FridgeBE.Core.Models.RequestModels
     public class IngredientUpdateRequest
     {
         [StringLength(50)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public string? Description { get; set; }
 

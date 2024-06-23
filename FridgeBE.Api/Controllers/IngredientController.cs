@@ -57,7 +57,7 @@ namespace FridgeBE.Api.Controllers
 
         // PUT api/<IngredientController>/5
         [HttpPut("{id}")]
-        public void Put(Guid id, [FromBody] string value)
+        public void Put(Guid id, [FromBody] IngredientUpdateRequest ingredientUpdateRequest)
         {
 
         }
