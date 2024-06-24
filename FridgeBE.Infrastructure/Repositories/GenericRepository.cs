@@ -19,58 +19,85 @@ namespace FridgeBE.Infrastructure.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        public T Create(T entity)
+        public virtual T Create(T entity)
         {
             EntityEntry<T> entityEntry = _dbSet.Add(entity);
-            _context.SaveChanges();
-
-            // get id
-            // context.Entry(blog).Property(e => e.Id).CurrentValue
             return entityEntry.Entity;
         }
 
-        public async Task<T> CreateAsync(T entity)
+        public virtual async Task<T> CreateAndSaveAsync(T entity)
         {
             EntityEntry<T> entityEntry = _dbSet.Add(entity);
             await _context.SaveChangesAsync();
             return entityEntry.Entity;
         }
 
-        public bool Update(T entity)
+        public virtual T Update(T entity)
         {
-            _dbSet.Update(entity);
-            //_dbSet.UpdateRange(entity);
-            return _context.SaveChanges() > 0;
+            EntityEntry<T> entityEntry = _dbSet.Update(entity);
+            return entityEntry.Entity;
         }
 
-        public bool UpdateRange(IEnumerable<T> entity)
+        public virtual async Task<T> UpdateAndSaveAsync(T entity)
         {
-            _dbSet.UpdateRange(entity);
-            //_dbSet.UpdateRange(entity);
-            return _context.SaveChanges() > 0;
+            EntityEntry<T> entityEntry = _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return entityEntry.Entity;
         }
 
-        public async Task<bool> UpdateAsync(T entity)
+        public virtual void UpdateRange(IEnumerable<T> entities)
         {
-            _dbSet.Update(entity);
+            _dbSet.UpdateRange(entities);
+        }
+
+        public virtual async Task<bool> UpdateRangeAndSaveAsync(IEnumerable<T> entities)
+        {
+            _dbSet.UpdateRange(entities);
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public bool Delete(T entity)
+        public virtual T Delete(T entity)
         {
-            _dbSet.Remove(entity);
-            return _context.SaveChanges() > 0;
+            EntityEntry<T> entityEntry = _dbSet.Remove(entity);
+            return entityEntry.Entity;
         }
 
-        public bool DeleteRange(IEnumerable<T> entity)
+        public virtual async Task<T> DeleteAndSaveAsync(T entity)
+        {
+            EntityEntry<T> entityEntry = _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+            return entityEntry.Entity;
+        }
+
+        public virtual async Task<T?> DeleteById<TKey>(TKey id)
+        {
+            T? entity = await _dbSet.FindAsync(id);
+            if (entity == null)
+                return null;
+
+            EntityEntry<T> entityEntry = _dbSet.Remove(entity);
+            return entityEntry.Entity;
+        }
+
+        public virtual async Task<T?> DeleteByIdAndSaveAsync<TKey>(TKey id)
+        {
+            T? entity = await _dbSet.FindAsync(id);
+            if (entity == null)
+                return null;
+
+            EntityEntry<T> entityEntry = _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+            return entityEntry.Entity;
+        }
+
+        public virtual void DeleteRange(IEnumerable<T> entity)
         {
             _dbSet.RemoveRange(entity);
-            return _context.SaveChanges() > 0;
         }
 
-        public async Task<bool> DeleteAsync(T entity)
+        public virtual async Task<bool> DeleteRangeAndSaveAsync(IEnumerable<T> entity)
         {
-            _dbSet.Remove(entity);
+            _dbSet.RemoveRange(entity);
             return await _context.SaveChangesAsync() > 0;
         }
 

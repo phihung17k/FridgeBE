@@ -59,7 +59,7 @@ namespace FridgeBE.Infrastructure.Utils
 
             string extension = Path.GetExtension(file.FileName);
             if (!ValidateFileExtension(extension))
-               throw new RequestException(HttpStatusCode.BadRequest, string.Format(ExceptionMessage.UnsupportFile, extension));
+               throw new RequestException(HttpStatusCode.BadRequest, string.Format(ErrorMessages.UnsupportFile, extension));
 
             if (file.Length > _fileSizeLimit)
                 throw new OutOfMemoryException($"File is too large, limit in 128MB (current ${_fileSizeLimit/Math.Pow(10, 6)})");

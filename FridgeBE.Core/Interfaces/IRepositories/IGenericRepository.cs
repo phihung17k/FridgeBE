@@ -7,13 +7,19 @@ namespace FridgeBE.Core.Interfaces.IRepositories
     public interface IGenericRepository<T> where T : EntityBase
     {
         T Create(T entity);
-        bool Update(T entity);
-        bool UpdateRange(IEnumerable<T> entity);
-        bool Delete(T entity);
-        bool DeleteRange(IEnumerable<T> entity);
-        Task<T> CreateAsync(T entity);
-        Task<bool> UpdateAsync(T entity);
-        Task<bool> DeleteAsync(T entity);
+        Task<T> CreateAndSaveAsync(T entity);
+
+        T Update(T entity);
+        Task<T> UpdateAndSaveAsync(T entity);
+        void UpdateRange(IEnumerable<T> entities);
+        Task<bool> UpdateRangeAndSaveAsync(IEnumerable<T> entities);
+
+        T Delete(T entity);
+        Task<T> DeleteAndSaveAsync(T entity);
+        Task<T?> DeleteById<TKey>(TKey id);
+        Task<T?> DeleteByIdAndSaveAsync<TKey>(TKey id);
+        void DeleteRange(IEnumerable<T> entity);
+        Task<bool> DeleteRangeAndSaveAsync(IEnumerable<T> entity);
 
         Task<T?> GetById<Tid>(Tid id);
         IList<T> GetAll();

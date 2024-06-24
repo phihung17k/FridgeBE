@@ -23,12 +23,12 @@ namespace FridgeBE.Infrastructure.Repositories
             };
         }
 
-        public int Complete()
+        public int SaveChanges()
         {
             return _context.SaveChanges();
         }
 
-        public async Task<int> CompleteAsync()
+        public async Task<int> SaveChangeAsync()
         {
             return await _context.SaveChangesAsync();
         }

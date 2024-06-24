@@ -37,7 +37,7 @@ namespace FridgeBE.Infrastructure.Services
                 ImageUrl = filePath
             };
 
-            await Repository.CreateAsync(ingredient);
+            await Repository.CreateAndSaveAsync(ingredient);
             return _mapper.Map<IngredientModel>(ingredient);
         }
 
@@ -68,7 +68,8 @@ namespace FridgeBE.Infrastructure.Services
                 string filePath = await FileUtils.UploadFile(ingredientRequest.Image, _configuration["ExternalFilePath:ImageFolder"]);
                 ingredient.ImageUrl = filePath;
             }
-            await Repository.UpdateAsync(ingredient);
+            await Repository.UpdateAndSaveAsync(ingredient);
+            await _unitOfWork.SaveChangeAsync();
             return _mapper.Map<IngredientModel>(ingredient);
         }
 
@@ -79,7 +80,7 @@ namespace FridgeBE.Infrastructure.Services
             if (ingredient == null)
                 return null;
 
-            await Repository.DeleteAsync(ingredient);
+            await Repository.DeleteAndSaveAsync(ingredient);
             return _mapper.Map<IngredientModel>(ingredient);
         }
     }

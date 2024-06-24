@@ -1,4 +1,5 @@
-﻿using FridgeBE.Core.Interfaces.IServices;
+﻿using FridgeBE.Core.Exceptions;
+using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models;
 using FridgeBE.Core.Models.RequestModels;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,7 @@ namespace FridgeBE.Api.Controllers
         {
             IngredientModel? ingredientModel = await _service.GetDetailIngredient(id);
             if (ingredientModel == null)
-                return NotFound();
+                return NotFound(ErrorMessages.IngredientNotFound);
 
             return Ok(ingredientModel);
         }
@@ -64,7 +65,7 @@ namespace FridgeBE.Api.Controllers
 
             IngredientModel? ingredient = await _service.UpdateIngredient(id, ingredientUpdateRequest);
             if (ingredient == null)
-                return NotFound("Ingredient is not exist");
+                return NotFound(ErrorMessages.IngredientNotFound);
 
             return Ok(ingredient);
         }
@@ -75,7 +76,7 @@ namespace FridgeBE.Api.Controllers
         {
             IngredientModel? ingredient = await _service.DeleteIngredient(id);
             if (ingredient == null)
-                return NotFound("Ingredient is not exist");
+                return NotFound(ErrorMessages.IngredientNotFound);
 
             return Ok(ingredient);
         }

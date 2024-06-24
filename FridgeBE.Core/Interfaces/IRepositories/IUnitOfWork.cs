@@ -4,8 +4,8 @@ namespace FridgeBE.Core.Interfaces.IRepositories
 {
     public interface IUnitOfWork : IDisposable
     {
-        int Complete();
-        Task<int> CompleteAsync();
+        int SaveChanges();
+        Task<int> SaveChangeAsync();
         IGenericRepository<T>? Repository<T>() where T : EntityBase;
     }
 }
