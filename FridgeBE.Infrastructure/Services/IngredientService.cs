@@ -47,10 +47,39 @@ namespace FridgeBE.Infrastructure.Services
             return _mapper.Map<IReadOnlyList<IngredientModel>>(ingredients);
         }
 
-        public async Task<IngredientModel?> GetDetailIngredient(Guid ingredientId)
+        public async Task<IngredientModel?> GetDetailIngredient(Guid id)
         {
-            Ingredient? ingredient = await Repository.GetById(ingredientId);
+            Ingredient? ingredient = await Repository.GetById(id);
 
+            return _mapper.Map<IngredientModel>(ingredient);
+        }
+
+        public async Task<IngredientModel?> UpdateIngredient(Guid id, IngredientUpdateRequest ingredientRequest)
+        {
+            Ingredient? ingredient = await Repository.GetById(id);
+
+            if (ingredient == null)
+                return null;
+
+            ingredient!.Name = ingredientRequest.Name ?? ingredient.Name;
+            ingredient.Description = ingredientRequest.Description ?? ingredient.Description;
+            if (ingredientRequest.Image != null)
+            {
+                string filePath = await FileUtils.UploadFile(ingredientRequest.Image, _configuration["ExternalFilePath:ImageFolder"]);
+                ingredient.ImageUrl = filePath;
+            }
+            await Repository.UpdateAsync(ingredient);
+            return _mapper.Map<IngredientModel>(ingredient);
+        }
+
+        public async Task<IngredientModel?> DeleteIngredient(Guid id)
+        {
+            Ingredient? ingredient = await Repository.GetById(id);
+
+            if (ingredient == null)
+                return null;
+
+            await Repository.DeleteAsync(ingredient);
             return _mapper.Map<IngredientModel>(ingredient);
         }
     }

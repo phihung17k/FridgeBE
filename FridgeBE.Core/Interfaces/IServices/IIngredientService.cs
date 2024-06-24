@@ -10,5 +10,7 @@ namespace FridgeBE.Core.Interfaces.IServices
         Task<IngredientModel?> CreateIngredient(IngredientCreationRequest ingredientRequest);
         Task<IngredientModel?> GetDetailIngredient(Guid ingredientId);
         Task<IReadOnlyList<IngredientModel>> GetAll();
+        Task<IngredientModel?> UpdateIngredient(Guid id, IngredientUpdateRequest ingredientRequest);
+        Task<IngredientModel?> DeleteIngredient(Guid id);
     }
 }

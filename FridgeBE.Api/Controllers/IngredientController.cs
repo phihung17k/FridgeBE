@@ -18,7 +18,7 @@ namespace FridgeBE.Api.Controllers
 
         // GET: api/<IngredientController>
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<IngredientModel>>> Get()
+        public async Task<ActionResult<IReadOnlyList<IngredientModel>>> GetAll()
         {
             IReadOnlyList<IngredientModel> results = await _service.GetAll();
             return Ok(results);
@@ -26,7 +26,7 @@ namespace FridgeBE.Api.Controllers
 
         // GET api/<IngredientController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<IngredientModel>> Get(Guid id)
+        public async Task<ActionResult<IngredientModel>> GetById(Guid id)
         {
             IngredientModel? ingredientModel = await _service.GetDetailIngredient(id);
             if (ingredientModel == null)
@@ -57,15 +57,27 @@ namespace FridgeBE.Api.Controllers
 
         // PUT api/<IngredientController>/5
         [HttpPut("{id}")]
-        public void Put(Guid id, [FromBody] IngredientUpdateRequest ingredientUpdateRequest)
+        public async Task<IActionResult> UpdateIngredient(Guid id, [FromForm] IngredientUpdateRequest ingredientUpdateRequest)
         {
+            if (ingredientUpdateRequest == null)
+                return BadRequest();
 
+            IngredientModel? ingredient = await _service.UpdateIngredient(id, ingredientUpdateRequest);
+            if (ingredient == null)
+                return NotFound("Ingredient is not exist");
+
+            return Ok(ingredient);
         }
 
         // DELETE api/<IngredientController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> DeleteIngredient(Guid id)
         {
+            IngredientModel? ingredient = await _service.DeleteIngredient(id);
+            if (ingredient == null)
+                return NotFound("Ingredient is not exist");
+
+            return Ok(ingredient);
         }
     }
 }
