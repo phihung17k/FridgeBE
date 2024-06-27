@@ -1,6 +1,10 @@
 ﻿using FridgeBE.Infrastructure;
 using FridgeBE.Core;
 using FridgeBE.Api.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using FridgeBE.Infrastructure.Data;
 
 namespace FridgeBE.Api
 {
@@ -20,6 +24,12 @@ namespace FridgeBE.Api
             services.AddHttpContextAccessor();
 
             //services.AddProblemDetails();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtBearerOptions => Configuration.Bind("JwtSettings", jwtBearerOptions))
+                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, cookieAuthenticationOptions => Configuration.Bind("CookieSettings", cookieAuthenticationOptions));
+
+            services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddCoreServices(Configuration);
             services.AddInfrastructureServices(Configuration);
@@ -50,11 +60,13 @@ namespace FridgeBE.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints((IEndpointRouteBuilder endpoints) =>
             {
                 endpoints.MapControllers();
+                endpoints.MapIdentityApi<IdentityUser>();
             });
         }
     }

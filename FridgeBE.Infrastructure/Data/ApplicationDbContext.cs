@@ -2,12 +2,13 @@
 using FridgeBE.Core.Entities.Common;
 using FridgeBE.Infrastructure.Data.EntityConfiguration;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FridgeBE.Infrastructure.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         private readonly IHttpContextAccessor _accessor;
 
@@ -16,6 +17,7 @@ namespace FridgeBE.Infrastructure.Data
             _accessor = httpContextAccessor;
         }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<IngredientRecipe> IngredientRecipes { get; set; }
@@ -74,6 +76,8 @@ namespace FridgeBE.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            new UserConfiguration().Configure(modelBuilder.Entity<User>());
 
             new IngredientConfiguration().Configure(modelBuilder.Entity<Ingredient>());
 

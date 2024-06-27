@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FridgeBE.Api.Controllers
@@ -19,6 +20,7 @@ namespace FridgeBE.Api.Controllers
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
+        [Authorize("Admin")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
