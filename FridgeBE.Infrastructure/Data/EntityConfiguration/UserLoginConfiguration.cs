@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FridgeBE.Infrastructure.Data.EntityConfiguration
 {
-    public class UserConfiguration : IEntityTypeConfiguration<User>
+    public class UserLoginConfiguration : IEntityTypeConfiguration<UserLogin>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public void Configure(EntityTypeBuilder<UserLogin> builder)
         {
-            builder.ToTable(nameof(User).ToLowerInvariant());
+            builder.ToTable(nameof(UserLogin).ToLowerInvariant());
         }
     }
 }

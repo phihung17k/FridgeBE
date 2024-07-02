@@ -25,7 +25,7 @@ namespace FridgeBE.Api
 
             //services.AddProblemDetails();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtBearerOptions => Configuration.Bind("JwtSettings", jwtBearerOptions))
                     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, cookieAuthenticationOptions => Configuration.Bind("CookieSettings", cookieAuthenticationOptions));
 

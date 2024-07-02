@@ -17,7 +17,8 @@ namespace FridgeBE.Infrastructure.Data
             _accessor = httpContextAccessor;
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserAccount> UserAccounts { get; set; }
+        public DbSet<UserLogin> UserLogins { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<IngredientRecipe> IngredientRecipes { get; set; }
@@ -77,7 +78,9 @@ namespace FridgeBE.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            new UserConfiguration().Configure(modelBuilder.Entity<User>());
+            new UserAccountConfiguration().Configure(modelBuilder.Entity<UserAccount>());
+
+            new UserLoginConfiguration().Configure(modelBuilder.Entity<UserLogin>());
 
             new IngredientConfiguration().Configure(modelBuilder.Entity<Ingredient>());
 

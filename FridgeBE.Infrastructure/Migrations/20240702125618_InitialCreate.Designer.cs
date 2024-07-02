@@ -4,6 +4,7 @@ using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FridgeBE.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240702125618_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,11 +147,15 @@ namespace FridgeBE.Infrastructure.Migrations
                     b.ToTable("step", (string)null);
                 });
 
-            modelBuilder.Entity("FridgeBE.Core.Entities.UserAccount", b =>
+            modelBuilder.Entity("FridgeBE.Core.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<string>("Claims")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("CreateBy")
                         .IsRequired()
@@ -157,19 +164,21 @@ namespace FridgeBE.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreateTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("DeleteBy")
                         .HasColumnType("longtext");
 
                     b.Property<DateTimeOffset?>("DeleteTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Gender")
+                    b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -181,42 +190,7 @@ namespace FridgeBE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("useraccount", (string)null);
-                });
-
-            modelBuilder.Entity("FridgeBE.Core.Entities.UserLogin", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LoginName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PasswordSalt")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid>("UserAccountId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserAccountId")
-                        .IsUnique();
-
-                    b.ToTable("userlogin", (string)null);
+                    b.ToTable("user", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -439,15 +413,6 @@ namespace FridgeBE.Infrastructure.Migrations
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("FridgeBE.Core.Entities.UserLogin", b =>
-                {
-                    b.HasOne("FridgeBE.Core.Entities.UserAccount", "UserAccount")
-                        .WithOne("UserLogin")
-                        .HasForeignKey("FridgeBE.Core.Entities.UserLogin", "UserAccountId");
-
-                    b.Navigation("UserAccount");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -502,11 +467,6 @@ namespace FridgeBE.Infrastructure.Migrations
             modelBuilder.Entity("FridgeBE.Core.Entities.Recipe", b =>
                 {
                     b.Navigation("Steps");
-                });
-
-            modelBuilder.Entity("FridgeBE.Core.Entities.UserAccount", b =>
-                {
-                    b.Navigation("UserLogin");
                 });
 #pragma warning restore 612, 618
         }
