@@ -6,7 +6,12 @@ namespace FridgeBE.Core.Entities
     {
         public int Id { get; set; }
 
-        public string LoginName { get; set; }
+        //public string LoginName { get; set; }
+
+        /// <summary>
+        /// use email to login
+        /// </summary>
+        public string Email { get; set; }
 
         public string PasswordHash { get; set; }
 
@@ -16,9 +21,7 @@ namespace FridgeBE.Core.Entities
         /// As a random factor but fixed for each user, it intervenes in the hashing function 
         ///     so that the password hash is unique even if a user chooses the same password as another user.
         /// </summary>
-        public string PasswordSalt { get; set; }
-
-        public string Email { get; set; }
+        //public string PasswordSalt { get; set; }
 
         public Guid UserAccountId { get; set; }
 

@@ -8,6 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using FridgeBE.Core.Entities.Common;
+using FridgeBE.Core.Entities;
 
 namespace FridgeBE.Infrastructure
 {
@@ -31,8 +35,15 @@ namespace FridgeBE.Infrastructure
             });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IIngredientService, IngredientService>();
+
+            services.AddScoped<IUserAccountRepository, UserAccountRepository>();
+            services.AddScoped<IUserLoginRepository, UserLoginRepository>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
+
+            services.AddScoped<IPasswordHasher<UserAccount>, PasswordHasher<UserAccount>>();
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using FridgeBE.Core.Models.RequestModels;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using FridgeBE.Core.Interfaces.IServices;
+using FridgeBE.Core.Models.RequestModels;
+using FridgeBE.Core.Models.ResponseModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FridgeBE.Api.Controllers
@@ -9,12 +9,22 @@ namespace FridgeBE.Api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [HttpPost]
-        public async Task<ActionResult> Register([FromBody] UserRegisterRequest request)
-        {
-            
+        private IUserService _userService;
 
-            return Ok();
+        public AuthController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<UserAccountModel>> Register([FromBody] UserRegisterRequest request)
+        {
+            UserAccountModel result = await _userService.CreateUser(request);
+
+            if (result == null)
+                return BadRequest("");
+
+            return Ok(result);
         }
     }
 }

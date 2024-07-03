@@ -29,7 +29,7 @@ namespace FridgeBE.Api
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtBearerOptions => Configuration.Bind("JwtSettings", jwtBearerOptions))
                     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, cookieAuthenticationOptions => Configuration.Bind("CookieSettings", cookieAuthenticationOptions));
 
-            services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+            //services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddCoreServices(Configuration);
             services.AddInfrastructureServices(Configuration);
@@ -66,7 +66,7 @@ namespace FridgeBE.Api
             app.UseEndpoints((IEndpointRouteBuilder endpoints) =>
             {
                 endpoints.MapControllers();
-                endpoints.MapIdentityApi<IdentityUser>();
+                //endpoints.MapIdentityApi<IdentityUser>();
             });
         }
     }

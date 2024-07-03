@@ -1,4 +1,4 @@
-﻿namespace FridgeBE.Core.Models
+﻿namespace FridgeBE.Core.Models.ResponseModels
 {
     public class RecipeModel
     {

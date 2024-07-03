@@ -1,7 +1,7 @@
 ﻿using FridgeBE.Core.Exceptions;
 using FridgeBE.Core.Interfaces.IServices;
-using FridgeBE.Core.Models;
 using FridgeBE.Core.Models.RequestModels;
+using FridgeBE.Core.Models.ResponseModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FridgeBE.Api.Controllers
@@ -46,10 +46,10 @@ namespace FridgeBE.Api.Controllers
             //    return BadRequest(ModelState);
             //}
 
-            if (ingredientRequest == null)
-            {
-                return BadRequest();
-            }
+            //if (ingredientRequest == null)
+            //{
+            //    return BadRequest();
+            //}
 
             IngredientModel? ingredient = await _service.CreateIngredient(ingredientRequest);
 

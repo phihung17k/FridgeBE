@@ -2,8 +2,8 @@
 using FridgeBE.Core.Entities;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Interfaces.IServices;
-using FridgeBE.Core.Models;
 using FridgeBE.Core.Models.RequestModels;
+using FridgeBE.Core.Models.ResponseModels;
 using FridgeBE.Infrastructure.Repositories;
 using FridgeBE.Infrastructure.Utils;
 using Microsoft.Extensions.Configuration;
@@ -16,15 +16,15 @@ namespace FridgeBE.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
+        public IIngredientRepository Repository { get; set; }
+
         public IngredientService(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _configuration = configuration;
-            Repository = (_unitOfWork.Repository<Ingredient>() as IngredientRepository)!;
+            Repository = (_unitOfWork.Repository<Ingredient>() as IIngredientRepository)!;
         }
-
-        public IIngredientRepository Repository { get; set; }
 
         public async Task<IngredientModel?> CreateIngredient(IngredientCreationRequest request)
         {

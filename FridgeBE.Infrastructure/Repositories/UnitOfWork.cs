@@ -19,7 +19,9 @@ namespace FridgeBE.Infrastructure.Repositories
             _context = context;
             _repositoriesLookup = new Dictionary<Type, object>
             {
-                { typeof(Ingredient), new IngredientRepository(_context) }
+                { typeof(Ingredient), new IngredientRepository(_context) },
+                { typeof(UserAccount), new UserAccountRepository(_context) },
+                { typeof(UserLogin), new UserLoginRepository(_context) },
             };
         }
 

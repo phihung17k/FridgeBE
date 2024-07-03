@@ -46,7 +46,6 @@ namespace FridgeBE.Infrastructure.Utils
         /// <returns>Return path to the uploaded file</returns>
         public static async Task<string> UploadFile(IFormFile? file, string? folder = "Files")
         {
-            // return exception later
             if (file == null)
                 return string.Empty;
 
@@ -62,7 +61,7 @@ namespace FridgeBE.Infrastructure.Utils
                throw new RequestException(HttpStatusCode.BadRequest, string.Format(ErrorMessages.UnsupportFile, extension));
 
             if (file.Length > _fileSizeLimit)
-                throw new OutOfMemoryException($"File is too large, limit in 128MB (current ${_fileSizeLimit/Math.Pow(10, 6)})");
+                throw new RequestException(HttpStatusCode.BadRequest, $"File is too large, limit in 128MB (current ${_fileSizeLimit/Math.Pow(10, 6)})");
 
             string fileName = Path.GetRandomFileName();
             fileName = Path.ChangeExtension(fileName, extension);
