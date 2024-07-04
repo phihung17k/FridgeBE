@@ -8,11 +8,19 @@ namespace FridgeBE.Core.Mapping
     {
         public AutoMapperProfile() 
         { 
-            CreateMap<Ingredient, IngredientModel>().ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.ImageUrl)).ReverseMap();
+            CreateMap<Ingredient, IngredientModel>()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.ImageUrl))
+                .ReverseMap();
             CreateMap<Recipe, RecipeModel>().ReverseMap();
             CreateMap<Step, StepModel>().ReverseMap();
 
-            CreateMap<UserAccount, UserAccountModel>().ForMember(ucm => ucm.Email, opt => opt.MapFrom(uc => uc.UserLogin.Email))
+            CreateMap<UserAccount, UserAccountModel>()
+                .ForMember(uam => uam.Email, opt =>
+                {
+                    //opt.AllowNull();
+                    //opt.PreCondition(ua => ua.UserLogin != null);
+                    opt.MapFrom(ua => ua.UserLogin.Email);
+                })
                 .ReverseMap();
         }
     }

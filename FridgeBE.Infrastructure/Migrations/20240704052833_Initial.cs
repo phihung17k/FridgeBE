@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FridgeBE.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDB : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,7 +24,7 @@ namespace FridgeBE.Infrastructure.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Image = table.Column<string>(type: "longtext", nullable: true)
+                    ImageUrl = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CreateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     UpdateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
@@ -66,6 +66,32 @@ namespace FridgeBE.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_recipe", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "useraccount",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Gender = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    CreateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    UpdateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    DeleteTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    CreateBy = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UpdateBy = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DeleteBy = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_useraccount", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -117,6 +143,29 @@ namespace FridgeBE.Infrastructure.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "userlogin",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Email = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PasswordHash = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserAccountId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_userlogin", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_userlogin_useraccount_UserAccountId",
+                        column: x => x.UserAccountId,
+                        principalTable: "useraccount",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_ingredientrecipe_IngredientId",
                 table: "ingredientrecipe",
@@ -131,6 +180,12 @@ namespace FridgeBE.Infrastructure.Migrations
                 name: "IX_step_RecipeId",
                 table: "step",
                 column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_userlogin_UserAccountId",
+                table: "userlogin",
+                column: "UserAccountId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -143,10 +198,16 @@ namespace FridgeBE.Infrastructure.Migrations
                 name: "step");
 
             migrationBuilder.DropTable(
+                name: "userlogin");
+
+            migrationBuilder.DropTable(
                 name: "ingredient");
 
             migrationBuilder.DropTable(
                 name: "recipe");
+
+            migrationBuilder.DropTable(
+                name: "useraccount");
         }
     }
 }

@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FridgeBE.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240619084515_UpdateIngredientProperty")]
-    partial class UpdateIngredientProperty
+    [Migration("20240704080325_Pass")]
+    partial class Pass
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -147,6 +147,76 @@ namespace FridgeBE.Infrastructure.Migrations
                     b.ToTable("step", (string)null);
                 });
 
+            modelBuilder.Entity("FridgeBE.Core.Entities.UserAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CreateBy")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DeleteBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset?>("DeleteTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UpdateBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset?>("UpdateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("useraccount", (string)null);
+                });
+
+            modelBuilder.Entity("FridgeBE.Core.Entities.UserLogin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("UserAccountId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserAccountId")
+                        .IsUnique();
+
+                    b.ToTable("userlogin", (string)null);
+                });
+
             modelBuilder.Entity("FridgeBE.Core.Entities.IngredientRecipe", b =>
                 {
                     b.HasOne("FridgeBE.Core.Entities.Ingredient", null)
@@ -171,9 +241,23 @@ namespace FridgeBE.Infrastructure.Migrations
                     b.Navigation("Recipe");
                 });
 
+            modelBuilder.Entity("FridgeBE.Core.Entities.UserLogin", b =>
+                {
+                    b.HasOne("FridgeBE.Core.Entities.UserAccount", "UserAccount")
+                        .WithOne("UserLogin")
+                        .HasForeignKey("FridgeBE.Core.Entities.UserLogin", "UserAccountId");
+
+                    b.Navigation("UserAccount");
+                });
+
             modelBuilder.Entity("FridgeBE.Core.Entities.Recipe", b =>
                 {
                     b.Navigation("Steps");
+                });
+
+            modelBuilder.Entity("FridgeBE.Core.Entities.UserAccount", b =>
+                {
+                    b.Navigation("UserLogin");
                 });
 #pragma warning restore 612, 618
         }

@@ -2,13 +2,12 @@
 using FridgeBE.Core.Entities.Common;
 using FridgeBE.Infrastructure.Data.EntityConfiguration;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FridgeBE.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : DbContext
     {
         private readonly IHttpContextAccessor _accessor;
 

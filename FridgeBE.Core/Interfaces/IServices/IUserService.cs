@@ -10,5 +10,6 @@ namespace FridgeBE.Core.Interfaces.IServices
         IUserLoginRepository UserLoginRepository { get; set; }
 
         Task<UserAccountModel> CreateUser(UserRegisterRequest request);
+        Task<UserAccountModel> SignInByPassword(UserLoginRequest request);
     }
 }

@@ -4,7 +4,6 @@ using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
-using FridgeBE.Infrastructure.Repositories;
 using FridgeBE.Infrastructure.Utils;
 using Microsoft.Extensions.Configuration;
 

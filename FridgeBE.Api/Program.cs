@@ -1,4 +1,6 @@
 using FridgeBE.Api;
+using FridgeBE.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +27,13 @@ Startup _startup = new Startup(builder.Configuration);
 _startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
+
+// run migrations
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//    await db.Database.MigrateAsync();
+//}
 
 _startup.Configure(app, app.Environment);
 

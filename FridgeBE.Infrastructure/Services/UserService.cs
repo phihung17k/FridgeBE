@@ -6,6 +6,7 @@ using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
 using FridgeBE.Infrastructure.Repositories;
+using FridgeBE.Infrastructure.Utils;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 using System.Security.Cryptography;
@@ -51,6 +52,16 @@ namespace FridgeBE.Infrastructure.Services
 
             await UserAccountRepository.UpdateAndSaveAsync(userAccount);
             return _mapper.Map<UserAccountModel>(userAccount);
+        }
+
+        public async Task<UserAccountModel> SignInByPassword(UserLoginRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+                throw new RequestException(HttpStatusCode.BadRequest, "Email and Password are required");
+
+
+
+            return null;
         }
     }
 }

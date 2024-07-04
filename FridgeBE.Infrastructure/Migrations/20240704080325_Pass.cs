@@ -5,18 +5,10 @@
 namespace FridgeBE.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Update3 : Migration
+    public partial class Pass : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "PasswordSalt",
-                table: "userlogin");
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
                 name: "PasswordSalt",
@@ -24,6 +16,14 @@ namespace FridgeBE.Infrastructure.Migrations
                 type: "longtext",
                 nullable: false)
                 .Annotation("MySql:CharSet", "utf8mb4");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "PasswordSalt",
+                table: "userlogin");
         }
     }
 }

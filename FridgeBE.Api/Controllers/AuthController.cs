@@ -16,7 +16,7 @@ namespace FridgeBE.Api.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<UserAccountModel>> Register([FromBody] UserRegisterRequest request)
         {
             UserAccountModel result = await _userService.CreateUser(request);
@@ -25,6 +25,19 @@ namespace FridgeBE.Api.Controllers
                 return BadRequest("");
 
             return Ok(result);
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Login([FromBody] UserLoginRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+                return BadRequest("Email and Password are required");
+
+            UserAccountModel result = await _userService.SignInByPassword(request);
+            if (result == null)
+                return BadRequest("");
+
+            return Ok();
         }
     }
 }
