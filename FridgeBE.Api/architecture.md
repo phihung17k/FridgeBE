@@ -31,6 +31,13 @@ Api: entry point for application, interact with Infrastructure through interface
 - Views
 - ViewModels
 
+Middleware and Filters
+- Request -> Middleware -> Filters -> Controller (and vice versa)
+- Filter
+	- IActionFilter (OnActionExecuting) -> Controller -> IActionFilter (OnActionExecuted) -> IResultFilter (OnResultExecuting) -> IResultFilter (OnResultExecuted) -> Middleware
+	- IActionFilter (OnActionExecuting) -> IResultFilter (OnResultExecuting): not include ContentType yet
+	- IResultFilter (OnResultExecuted): included ContentType
+- Flow: [image](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters/_static/filter-pipeline-2.png?view=aspnetcore-8.0)
 
 Other architecture:
 - Core: should not have any dependencies.

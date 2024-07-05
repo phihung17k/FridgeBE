@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using FridgeBE.Infrastructure.Data;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace FridgeBE.Api
 {
@@ -20,7 +22,11 @@ namespace FridgeBE.Api
         public void ConfigureServices(IServiceCollection services)
         {
             // Add services to the container.
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(ResultFilter));
+                options.Filters.Add(typeof(ActionFilter));
+            });
             services.AddHttpContextAccessor();
 
             //services.AddProblemDetails();
@@ -28,7 +34,6 @@ namespace FridgeBE.Api
             services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtBearerOptions => Configuration.Bind("JwtSettings", jwtBearerOptions))
                     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, cookieAuthenticationOptions => Configuration.Bind("CookieSettings", cookieAuthenticationOptions));
-
             //services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddCoreServices(Configuration);
