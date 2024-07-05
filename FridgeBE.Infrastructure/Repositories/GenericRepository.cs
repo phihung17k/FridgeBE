@@ -13,6 +13,8 @@ namespace FridgeBE.Infrastructure.Repositories
         private readonly ApplicationDbContext _context;
         private readonly DbSet<T> _dbSet;
 
+        public DbSet<T> DbSet { get { return _dbSet; } }
+
         public GenericRepository(ApplicationDbContext dbContext)
         {
             _context = dbContext;

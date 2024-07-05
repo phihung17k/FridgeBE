@@ -12,6 +12,6 @@ namespace FridgeBE.Core.Entities
 
         public DateTime? DateOfBirth { get; set; }
 
-        public UserLogin? UserLogin { get; set; }
+        public UserLogin UserLogin { get; set; }
     }
 }

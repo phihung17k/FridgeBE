@@ -41,12 +41,23 @@ namespace FridgeBE.Infrastructure.Services
             if (!Regex.IsMatch(request.Email, "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"))
                 throw new RequestException(HttpStatusCode.BadRequest, "Email is invalid");
 
-            var userAccount = new UserAccount
+            // if email is existed, send mail to confirm "Somebody tried to register your account.
+            //      If this was you please ignore this mail. If you forgot your password, use the forgot password link on the login page"
+            // error: Unrecognized email or password 
+            UserAccount? userAccount = UserAccountRepository.GetByEmail(request.Email);
+
+            if (userAccount != null)
+                throw new RequestException(HttpStatusCode.BadRequest, "Unrecognized email or password");
+
+            PasswordUtils.HashPassword(request.Password, out string passwordHash, out string passwordSalt);
+
+            userAccount = new UserAccount
             {
-                UserLogin = new UserLogin 
-                { 
+                UserLogin = new UserLogin
+                {
                     Email = request.Email,
-                    PasswordHash = _passwordHasher.HashPassword(null, request.Password)
+                    PasswordHash = passwordHash,
+                    PasswordSalt = passwordSalt
                 }
             };
 
@@ -59,9 +70,17 @@ namespace FridgeBE.Infrastructure.Services
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
                 throw new RequestException(HttpStatusCode.BadRequest, "Email and Password are required");
 
+            UserAccount? userAccount = UserAccountRepository.GetByEmail(request.Email, includeUserLogin: true) ?? throw new RequestException(HttpStatusCode.BadRequest, "Unrecognized email or password");
 
+            bool result = PasswordUtils.VerifyPasswordHash(request.Password, userAccount.UserLogin.PasswordHash, userAccount.UserLogin.PasswordSalt);
 
-            return null;
+            if (!result)
+                throw new RequestException(HttpStatusCode.BadRequest, "Incorrect email or password");
+
+            // create token
+            await UserAccountRepository.GetAsync();
+
+            return _mapper.Map<UserAccountModel>(userAccount);
         }
     }
 }
