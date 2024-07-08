@@ -1,6 +1,6 @@
 ﻿namespace FridgeBE.Core.Entities
 {
-    public class UserPermission
+    public class UserAccountPermission
     {
         public int Id { get; set; }
 

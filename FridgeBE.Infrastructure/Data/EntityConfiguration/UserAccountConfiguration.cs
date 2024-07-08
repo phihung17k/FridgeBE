@@ -14,6 +14,10 @@ namespace FridgeBE.Infrastructure.Data.EntityConfiguration
                    .WithOne(ul => ul.UserAccount)
                    .HasForeignKey<UserLogin>(ul => ul.UserAccountId)
                    .IsRequired(false);
+
+            builder.HasMany(uc => uc.Permissions)
+                   .WithMany(p => p.UserAccounts)
+                   .UsingEntity<UserAccountPermission>();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace FridgeBE.Core.Entities
         /// </summary>
         public string Email { get; set; }
 
-        public string PasswordHash { get; set; }
+        public string PasswordHash { get; set; } = null!;
 
         /// <summary>
         /// A salt is a random string generated when a password is set
@@ -21,7 +21,7 @@ namespace FridgeBE.Core.Entities
         /// As a random factor but fixed for each user, it intervenes in the hashing function 
         ///     so that the password hash is unique even if a user chooses the same password as another user.
         /// </summary>
-        public string PasswordSalt { get; set; }
+        public string PasswordSalt { get; set; } = null!;
 
         public Guid UserAccountId { get; set; }
 
