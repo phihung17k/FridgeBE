@@ -8,8 +8,12 @@ using FridgeBE.Core.Models.ResponseModels;
 using FridgeBE.Infrastructure.Repositories;
 using FridgeBE.Infrastructure.Utils;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
+using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace FridgeBE.Infrastructure.Services
@@ -19,12 +23,14 @@ namespace FridgeBE.Infrastructure.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<UserAccount> _passwordHasher;
+        private readonly IConfiguration _configuration;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher<UserAccount> passwordHasher)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher<UserAccount> passwordHasher, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
+            _configuration = configuration;
 
             UserAccountRepository = (_unitOfWork.Repository<UserAccount>() as IUserAccountRepository)!;
             UserLoginRepository = (_unitOfWork.Repository<UserLogin>() as IUserLoginRepository)!;
@@ -77,10 +83,18 @@ namespace FridgeBE.Infrastructure.Services
             bool result = PasswordUtils.VerifyPasswordHash(request.Password, userAccount.UserLogin.PasswordHash, userAccount.UserLogin.PasswordSalt);
 
             if (!result)
-                return new UserAccountModel(HttpStatusCode.BadRequest, "Incorrect email or password");
+                return new UserAccountModel(HttpStatusCode.Unauthorized, "Invalid email or password");
 
             // create token
-            //await UserAccountRepository.GetAsync();
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new List<Claim>
+            {
+                new Claim("user_identifier", userAccount.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, userAccount.Name),
+                new Claim(ClaimTypes.Email, request.Email),
+            };
 
             return _mapper.Map<UserAccountModel>(userAccount);
         }

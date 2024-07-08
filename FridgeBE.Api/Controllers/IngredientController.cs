@@ -30,8 +30,6 @@ namespace FridgeBE.Api.Controllers
         public async Task<ActionResult<IngredientModel>> GetById(Guid id)
         {
             IngredientModel? ingredientModel = await _service.GetDetailIngredient(id);
-            if (ingredientModel == null)
-                return NotFound(ErrorMessages.IngredientNotFound);
 
             return Ok(ingredientModel);
         }
@@ -63,9 +61,7 @@ namespace FridgeBE.Api.Controllers
             if (ingredientUpdateRequest == null)
                 return BadRequest();
 
-            IngredientModel? ingredient = await _service.UpdateIngredient(id, ingredientUpdateRequest);
-            if (ingredient == null)
-                return NotFound(ErrorMessages.IngredientNotFound);
+            IngredientModel ingredient = await _service.UpdateIngredient(id, ingredientUpdateRequest);
 
             return Ok(ingredient);
         }
@@ -75,8 +71,6 @@ namespace FridgeBE.Api.Controllers
         public async Task<IActionResult> DeleteIngredient(Guid id)
         {
             IngredientModel? ingredient = await _service.DeleteIngredient(id);
-            if (ingredient == null)
-                return NotFound(ErrorMessages.IngredientNotFound);
 
             return Ok(ingredient);
         }

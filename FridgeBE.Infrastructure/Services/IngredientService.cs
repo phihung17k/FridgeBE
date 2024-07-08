@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using FridgeBE.Core.Entities;
+using FridgeBE.Core.Exceptions;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
 using FridgeBE.Infrastructure.Utils;
 using Microsoft.Extensions.Configuration;
+using System.Net;
 
 namespace FridgeBE.Infrastructure.Services
 {
@@ -50,15 +52,18 @@ namespace FridgeBE.Infrastructure.Services
         {
             Ingredient? ingredient = await Repository.GetById(id);
 
+            if (ingredient == null)
+                return new IngredientModel(HttpStatusCode.NotFound, ErrorMessages.IngredientNotFound);
+
             return _mapper.Map<IngredientModel>(ingredient);
         }
 
-        public async Task<IngredientModel?> UpdateIngredient(Guid id, IngredientUpdateRequest ingredientRequest)
+        public async Task<IngredientModel> UpdateIngredient(Guid id, IngredientUpdateRequest ingredientRequest)
         {
             Ingredient? ingredient = await Repository.GetById(id);
 
             if (ingredient == null)
-                return null;
+                return new IngredientModel(HttpStatusCode.NotFound, ErrorMessages.IngredientNotFound);
 
             ingredient!.Name = ingredientRequest.Name ?? ingredient.Name;
             ingredient.Description = ingredientRequest.Description ?? ingredient.Description;
@@ -72,12 +77,12 @@ namespace FridgeBE.Infrastructure.Services
             return _mapper.Map<IngredientModel>(ingredient);
         }
 
-        public async Task<IngredientModel?> DeleteIngredient(Guid id)
+        public async Task<IngredientModel> DeleteIngredient(Guid id)
         {
             Ingredient? ingredient = await Repository.GetById(id);
 
             if (ingredient == null)
-                return null;
+                return new IngredientModel(HttpStatusCode.NotFound, ErrorMessages.IngredientNotFound);
 
             await Repository.DeleteAndSaveAsync(ingredient);
             return _mapper.Map<IngredientModel>(ingredient);
