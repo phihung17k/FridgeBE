@@ -2,6 +2,7 @@
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FridgeBE.Api.Controllers
@@ -19,6 +20,7 @@ namespace FridgeBE.Api.Controllers
 
         // GET: api/<IngredientController>
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IReadOnlyList<IngredientModel>>> GetAll()
         {
             IReadOnlyList<IngredientModel> results = await _service.GetAll();

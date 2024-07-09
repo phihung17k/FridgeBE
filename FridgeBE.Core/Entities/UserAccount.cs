@@ -6,7 +6,7 @@ namespace FridgeBE.Core.Entities
     {
         public Guid Id { get; set; }
 
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public string? Gender { get; set; }
 

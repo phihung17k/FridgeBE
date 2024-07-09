@@ -23,6 +23,8 @@ namespace FridgeBE.Core.Entities
         /// </summary>
         public string PasswordSalt { get; set; } = null!;
 
+        public string? Token { get; set; }
+
         public Guid UserAccountId { get; set; }
 
         /// <summary>

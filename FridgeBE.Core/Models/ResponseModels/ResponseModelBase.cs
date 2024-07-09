@@ -11,6 +11,9 @@ namespace FridgeBE.Core.Models.ResponseModels
         [JsonIgnore]
         public string ErrorMessage { get; set; }
 
+        public ResponseModelBase()
+        { }
+
         public ResponseModelBase(HttpStatusCode statusCode, string errorMessage)
         {
             StatusCode = statusCode;

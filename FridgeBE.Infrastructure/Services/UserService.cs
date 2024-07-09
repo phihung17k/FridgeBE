@@ -5,11 +5,13 @@ using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
+using FridgeBE.Core.ValueObjects;
 using FridgeBE.Infrastructure.Repositories;
 using FridgeBE.Infrastructure.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -24,13 +26,15 @@ namespace FridgeBE.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<UserAccount> _passwordHasher;
         private readonly IConfiguration _configuration;
+        private readonly JwtOptions _jwtOptions;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher<UserAccount> passwordHasher, IConfiguration configuration)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher<UserAccount> passwordHasher, IConfiguration configuration, JwtOptions jwtOptions)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
             _configuration = configuration;
+            _jwtOptions = jwtOptions;
 
             UserAccountRepository = (_unitOfWork.Repository<UserAccount>() as IUserAccountRepository)!;
             UserLoginRepository = (_unitOfWork.Repository<UserLogin>() as IUserLoginRepository)!;
@@ -59,6 +63,7 @@ namespace FridgeBE.Infrastructure.Services
 
             userAccount = new UserAccount
             {
+                Name = RandomUtils.RandomName(),
                 UserLogin = new UserLogin
                 {
                     Email = request.Email,
@@ -86,7 +91,7 @@ namespace FridgeBE.Infrastructure.Services
                 return new UserAccountModel(HttpStatusCode.Unauthorized, "Invalid email or password");
 
             // create token
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
@@ -96,7 +101,23 @@ namespace FridgeBE.Infrastructure.Services
                 new Claim(ClaimTypes.Email, request.Email),
             };
 
-            return _mapper.Map<UserAccountModel>(userAccount);
+            var token = new JwtSecurityToken(
+                issuer: _jwtOptions.Issuer, 
+                audience: _jwtOptions.Audience, 
+                claims: claims, 
+                expires: DateTime.Now.AddSeconds(_jwtOptions.ExpirationSeconds),
+                signingCredentials: credentials
+                );
+
+            string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            userAccount.UserLogin.Token = tokenString;
+            await _unitOfWork.SaveChangeAsync();
+
+            UserAccountModel model = _mapper.Map<UserAccountModel>(userAccount);
+            model.Token = tokenString;
+
+            return model;
         }
     }
 }

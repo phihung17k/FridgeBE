@@ -21,6 +21,7 @@ namespace FridgeBE.Core.Mapping
                     //opt.PreCondition(ua => ua.UserLogin != null);
                     opt.MapFrom(ua => ua.UserLogin.Email);
                 })
+                .ForMember(uam => uam.Token, opt => opt.MapFrom(ua => ua.UserLogin.Token))
                 .ReverseMap();
         }
     }

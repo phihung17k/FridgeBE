@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Identity;
 using FridgeBE.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using FridgeBE.Core.ValueObjects;
 
 namespace FridgeBE.Api
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; set; }
+        private IConfiguration _configuration { get; set; }
 
-        public Startup(IConfiguration _configuration)
+        public Startup(IConfiguration configuration)
         {
-            Configuration = _configuration;
+            _configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -31,13 +34,29 @@ namespace FridgeBE.Api
 
             //services.AddProblemDetails();
 
+            JwtOptions jwtOptions = _configuration.GetSection("JwtOptions").Get<JwtOptions>()!;
+            services.AddSingleton(jwtOptions);
+
             services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtBearerOptions => Configuration.Bind("JwtSettings", jwtBearerOptions))
-                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, cookieAuthenticationOptions => Configuration.Bind("CookieSettings", cookieAuthenticationOptions));
+                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtBearerOptions =>
+                    {
+                        jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = jwtOptions.Issuer,
+                            ValidAudience = jwtOptions.Audience,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key))
+                        };
+                    });
+
+            services.AddAuthorization();
             //services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddCoreServices(Configuration);
-            services.AddInfrastructureServices(Configuration);
+            services.AddCoreServices(_configuration);
+            services.AddInfrastructureServices(_configuration);
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
