@@ -6,10 +6,10 @@ namespace FridgeBE.Core.Models.ResponseModels
     public class ResponseModelBase
     {
         [JsonIgnore]
-        public HttpStatusCode StatusCode { get; set; }
+        public HttpStatusCode? StatusCode { get; set; }
 
         [JsonIgnore]
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
         public ResponseModelBase()
         { }

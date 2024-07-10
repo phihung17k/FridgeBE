@@ -19,7 +19,7 @@ namespace FridgeBE.Api.Middleware
                 var responseModel = (ResponseModelBase) objectResult.Value;
                 if (!string.IsNullOrEmpty(responseModel.ErrorMessage))
                 {
-                    int statusCode = (int) responseModel.StatusCode;
+                    int statusCode = (int) responseModel.StatusCode!;
                     string title = ReasonPhrases.GetReasonPhrase(statusCode);
 
                     var problemDetails = new ProblemDetails

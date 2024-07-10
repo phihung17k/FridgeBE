@@ -8,13 +8,13 @@ namespace FridgeBE.Api.Controllers
     public class UserController : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        public ActionResult GetAll()
         {
             return Ok();
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateUser()
+        public ActionResult CreateUser()
         {
             return Ok();
         }

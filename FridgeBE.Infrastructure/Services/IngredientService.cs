@@ -29,7 +29,7 @@ namespace FridgeBE.Infrastructure.Services
 
         public async Task<IngredientModel?> CreateIngredient(IngredientCreationRequest request)
         {
-            string filePath = await FileUtils.UploadFile(request.Image, _configuration["ExternalFilePath:ImageFolder"]);
+            string filePath = await FileUtils.UploadFile(request.Image, _configuration["ExternalFilePath:ImageFolder"]!);
 
             var ingredient = new Ingredient
             {
@@ -69,7 +69,7 @@ namespace FridgeBE.Infrastructure.Services
             ingredient.Description = ingredientRequest.Description ?? ingredient.Description;
             if (ingredientRequest.Image != null)
             {
-                string filePath = await FileUtils.UploadFile(ingredientRequest.Image, _configuration["ExternalFilePath:ImageFolder"]);
+                string filePath = await FileUtils.UploadFile(ingredientRequest.Image, _configuration["ExternalFilePath:ImageFolder"]!);
                 ingredient.ImageUrl = filePath;
             }
             await Repository.UpdateAndSaveAsync(ingredient);

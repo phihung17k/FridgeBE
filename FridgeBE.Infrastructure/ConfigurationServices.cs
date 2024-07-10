@@ -9,8 +9,6 @@ using Microsoft.Extensions.Logging;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using FridgeBE.Core.Entities.Common;
 using FridgeBE.Core.Entities;
 
 namespace FridgeBE.Infrastructure
@@ -24,7 +22,7 @@ namespace FridgeBE.Infrastructure
             {
                 option.UseMySql(configuration.GetConnectionString("Fridge"), ServerVersion.Parse("8.4.0"), sqlOptionsBuilder =>
                 {
-                    sqlOptionsBuilder.EnableRetryOnFailure(maxRetryCount: 2);
+                    //sqlOptionsBuilder.EnableRetryOnFailure(maxRetryCount: 2);
                     //sqlOptionsBuilder.MigrationsAssembly(nameof(FridgeBE.Infrastructure));
                 });
 

@@ -44,7 +44,7 @@ namespace FridgeBE.Infrastructure.Utils
         ///     Upload file to a specific folder, create the folder if it is not exist
         /// </summary>
         /// <returns>Return path to the uploaded file</returns>
-        public static async Task<string> UploadFile(IFormFile? file, string? folder = "Files")
+        public static async Task<string> UploadFile(IFormFile? file, string folder = "Files")
         {
             if (file == null)
                 return string.Empty;
