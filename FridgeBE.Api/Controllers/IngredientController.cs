@@ -1,4 +1,6 @@
-﻿using FridgeBE.Core.Exceptions;
+﻿using FridgeBE.Api.Authorization;
+using FridgeBE.Api.Constants;
+using FridgeBE.Core.Exceptions;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
@@ -20,7 +22,7 @@ namespace FridgeBE.Api.Controllers
 
         // GET: api/<IngredientController>
         [HttpGet]
-        [Authorize]
+        [Permission(PermissionConstants.ViewAllIngredients)]
         public async Task<ActionResult<IReadOnlyList<IngredientModel>>> GetAll()
         {
             IReadOnlyList<IngredientModel> results = await _service.GetAll();
@@ -29,6 +31,7 @@ namespace FridgeBE.Api.Controllers
 
         // GET api/<IngredientController>/5
         [HttpGet("{id}")]
+        [Permission(PermissionConstants.ViewAllIngredients)]
         public async Task<ActionResult<IngredientModel>> GetById(Guid id)
         {
             IngredientModel? ingredientModel = await _service.GetDetailIngredient(id);

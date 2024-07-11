@@ -1,16 +1,14 @@
 ﻿using FridgeBE.Infrastructure;
 using FridgeBE.Core;
-using FridgeBE.Api.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using FridgeBE.Infrastructure.Data;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FridgeBE.Core.ValueObjects;
 using Microsoft.OpenApi.Models;
+using FridgeBE.Api.Filters;
+using FridgeBE.Api.Middlewares;
+using Microsoft.AspNetCore.Authorization;
+using FridgeBE.Api.Authorization;
 
 namespace FridgeBE.Api
 {
@@ -53,7 +51,11 @@ namespace FridgeBE.Api
                         };
                     });
 
+            services.AddTransient<DefaultAuthorizationPolicyProvider>();
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+            services.AddTransient<IAuthorizationHandler, PermissionHandler>();
             services.AddAuthorization();
+
             //services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddCoreServices(_configuration);

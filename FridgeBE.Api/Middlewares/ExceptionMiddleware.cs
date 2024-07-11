@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Json;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace FridgeBE.Api.Middleware
+namespace FridgeBE.Api.Middlewares
 {
     public static class ExceptionMiddleware
     {

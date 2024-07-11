@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace FridgeBE.Api.Middleware
+namespace FridgeBE.Api.Filters
 {
     public class ActionFilter : IActionFilter
     {
@@ -14,9 +14,9 @@ namespace FridgeBE.Api.Middleware
         {
             if (context.Result is BadRequestObjectResult)
             {
-                BadRequestObjectResult result = (BadRequestObjectResult) context.Result!;
-                int statusCode = (int) result.StatusCode!;
-                string detail = (string) result.Value!;
+                BadRequestObjectResult result = (BadRequestObjectResult)context.Result!;
+                int statusCode = (int)result.StatusCode!;
+                string detail = (string)result.Value!;
                 string title = ReasonPhrases.GetReasonPhrase(statusCode);
 
                 var problemDetails = new ProblemDetails

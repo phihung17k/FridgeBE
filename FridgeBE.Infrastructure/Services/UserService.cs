@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FridgeBE.Api.Constants;
 using FridgeBE.Core.Entities;
 using FridgeBE.Core.Exceptions;
 using FridgeBE.Core.Interfaces.IRepositories;
@@ -99,6 +100,7 @@ namespace FridgeBE.Infrastructure.Services
                 new Claim("user_identifier", userAccount.Id.ToString()),
                 new Claim(ClaimTypes.NameIdentifier, userAccount.Name),
                 new Claim(ClaimTypes.Email, request.Email),
+                new Claim(PermissionConstants.ClaimType, PermissionConstants.ViewAllIngredients)
             };
 
             var token = new JwtSecurityToken(

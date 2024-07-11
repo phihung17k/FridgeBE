@@ -39,6 +39,11 @@ Middleware and Filters
 	- IResultFilter (OnResultExecuted): included ContentType
 - Flow: [image](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters/_static/filter-pipeline-2.png?view=aspnetcore-8.0)
 
+Authorization:
+- Policy (Role)
+- Policy (Claim)
+- Policy (Requirement + Handler): in project
+
 Other architecture:
 - Core: should not have any dependencies.
 - Infrastructure: depends on Core for domain models.
