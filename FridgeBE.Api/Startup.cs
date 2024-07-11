@@ -54,6 +54,7 @@ namespace FridgeBE.Api
             services.AddTransient<DefaultAuthorizationPolicyProvider>();
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
             services.AddTransient<IAuthorizationHandler, PermissionHandler>();
+            // TryAdd Authorization services in https://github.com/dotnet/aspnetcore/blob/c925f99cddac0df90ed0bc4a07ecda6b054a0b02/src/Security/Authorization/Core/src/AuthorizationServiceCollectionExtensions.cs#L21
             services.AddAuthorization();
 
             //services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
