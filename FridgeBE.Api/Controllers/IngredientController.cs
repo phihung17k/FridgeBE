@@ -39,6 +39,7 @@ namespace FridgeBE.Api.Controllers
 
         // POST api/<IngredientController>
         [HttpPost]
+        [Permission(View.AllIngredients, Edit.Ingredient)]
         public async Task<IActionResult> CreateIngredient([FromForm] IngredientCreationRequest ingredientRequest)
         {
             IngredientModel? ingredient = await _service.CreateIngredient(ingredientRequest);
