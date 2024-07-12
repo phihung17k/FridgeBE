@@ -43,6 +43,11 @@ Authorization:
 - Policy (Role)
 - Policy (Claim)
 - Policy (Requirement + Handler): in project
+- Elements in authorization:
+	- AuthorizeAttribute(policy name): to authorize by policy name
+	- IAuthorizationPolicyProvider: to add policy from AuthorizeAttribute(policy name), (add Requirements, Claims or Roles in policy)
+	- IAuthorizationRequirement: transform authorization infor from policy name to add Requirements in policy in IAuthorizationPolicyProvider
+	- IAuthorizationHandler: compare user's claims to Requirements 
 
 Other architecture:
 - Core: should not have any dependencies.

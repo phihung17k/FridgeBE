@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using FridgeBE.Api.Constants;
 using FridgeBE.Core.Entities;
-using FridgeBE.Core.Exceptions;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
 using FridgeBE.Core.ValueObjects;
-using FridgeBE.Infrastructure.Repositories;
 using FridgeBE.Infrastructure.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using static FridgeBE.Api.Constants.PermissionConstants;
 
 namespace FridgeBE.Infrastructure.Services
 {
@@ -97,10 +95,11 @@ namespace FridgeBE.Infrastructure.Services
 
             var claims = new List<Claim>
             {
-                new Claim("user_identifier", userAccount.Id.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, userAccount.Name),
+                new Claim(ClaimTypes.NameIdentifier, userAccount.Id.ToString()),
+                new Claim(ClaimTypes.Name, userAccount.Name),
                 new Claim(ClaimTypes.Email, request.Email),
-                new Claim(PermissionConstants.ClaimType, PermissionConstants.ViewAllIngredients)
+                new Claim(PermissionConstants.ClaimType, View.AllIngredients),
+                new Claim(PermissionConstants.ClaimType, Edit.Ingredient)
             };
 
             var token = new JwtSecurityToken(

@@ -29,6 +29,7 @@ namespace FridgeBE.Api.Filters
                         Detail = responseModel.ErrorMessage
                     };
                     objectResult.Value = problemDetails;
+                    objectResult.StatusCode = statusCode;
                 }
             }
         }

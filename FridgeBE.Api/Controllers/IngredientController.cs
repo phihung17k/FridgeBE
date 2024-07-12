@@ -1,11 +1,9 @@
 ﻿using FridgeBE.Api.Authorization;
-using FridgeBE.Api.Constants;
-using FridgeBE.Core.Exceptions;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static FridgeBE.Api.Constants.PermissionConstants;
 
 namespace FridgeBE.Api.Controllers
 {
@@ -22,7 +20,7 @@ namespace FridgeBE.Api.Controllers
 
         // GET: api/<IngredientController>
         [HttpGet]
-        [Permission(PermissionConstants.ViewAllIngredients)]
+        [Permission(View.AllIngredients, Edit.Ingredient)]
         public async Task<ActionResult<IReadOnlyList<IngredientModel>>> GetAll()
         {
             IReadOnlyList<IngredientModel> results = await _service.GetAll();
@@ -31,7 +29,7 @@ namespace FridgeBE.Api.Controllers
 
         // GET api/<IngredientController>/5
         [HttpGet("{id}")]
-        [Permission(PermissionConstants.ViewAllIngredients)]
+        [Permission(View.AllIngredients)]
         public async Task<ActionResult<IngredientModel>> GetById(Guid id)
         {
             IngredientModel? ingredientModel = await _service.GetDetailIngredient(id);
@@ -43,17 +41,6 @@ namespace FridgeBE.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateIngredient([FromForm] IngredientCreationRequest ingredientRequest)
         {
-            // modelstate valid, annotation return error automatically if invalid
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
-
-            //if (ingredientRequest == null)
-            //{
-            //    return BadRequest();
-            //}
-
             IngredientModel? ingredient = await _service.CreateIngredient(ingredientRequest);
 
             return Ok(ingredient);

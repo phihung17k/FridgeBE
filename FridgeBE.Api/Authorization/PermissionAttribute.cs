@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FridgeBE.Api.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FridgeBE.Api.Authorization
 {
     public class PermissionAttribute : AuthorizeAttribute
     {
-        const string PemissionPrefix = "Permission";
-
-        public PermissionAttribute(string policy) : base(policy)
-        { }
+        public PermissionAttribute(params string[] policy)
+        {
+            base.Policy = $"{PermissionConstants.ClaimType}:{string.Join(",", policy)}";
+        }
     }
 }

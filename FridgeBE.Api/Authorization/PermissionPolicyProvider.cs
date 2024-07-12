@@ -27,19 +27,13 @@ namespace FridgeBE.Api.Authorization
         /// 
         /// </summary>
         /// <returns>Returns the default authorization policy (the policy used for [Authorize] attributes without a policy specified)</returns>
-        public Task<AuthorizationPolicy> GetDefaultPolicyAsync()
-        {
-            return DefaultAuthorizationPolicyProvider.GetDefaultPolicyAsync();
-        }
+        public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => DefaultAuthorizationPolicyProvider.GetDefaultPolicyAsync();
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns>Returns the fallback authorization policy (the policy used by the Authorization Middleware when no policy is specified)</returns>
-        public Task<AuthorizationPolicy?> GetFallbackPolicyAsync()
-        {
-            return DefaultAuthorizationPolicyProvider.GetFallbackPolicyAsync();
-        }
+        public Task<AuthorizationPolicy?> GetFallbackPolicyAsync() => DefaultAuthorizationPolicyProvider.GetFallbackPolicyAsync();
 
         /// <summary>
         ///  
@@ -51,9 +45,14 @@ namespace FridgeBE.Api.Authorization
         {
             if (!policyName.StartsWith(PermissionConstants.ClaimType, StringComparison.InvariantCultureIgnoreCase))
                 return Task.FromResult<AuthorizationPolicy?>(null);
-
+            
             var policy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
-            policy.Requirements.Add(new PermissionRequirement(PermissionConstants.ClaimType, policyName));
+
+            string[] permissions = policyName.Substring(PermissionConstants.ClaimType.Length).Trim(':').Split(',');
+            foreach (string permission in permissions)
+            {
+                policy.Requirements.Add(new PermissionRequirement(PermissionConstants.ClaimType, permission));
+            }
 
             return Task.FromResult<AuthorizationPolicy?>(policy.Build());
         }
