@@ -39,6 +39,7 @@ namespace FridgeBE.Api
             services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtBearerOptions =>
                     {
+                        jwtBearerOptions.SaveToken = true;
                         jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
                         {
                             ValidateIssuer = true,

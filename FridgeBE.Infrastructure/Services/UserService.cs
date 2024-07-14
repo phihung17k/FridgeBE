@@ -1,21 +1,15 @@
 ﻿using AutoMapper;
-using FridgeBE.Api.Constants;
 using FridgeBE.Core.Entities;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Interfaces.IServices;
+using FridgeBE.Core.Interfaces.IUtils;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
-using FridgeBE.Core.ValueObjects;
 using FridgeBE.Infrastructure.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Security.Claims;
-using System.Text;
 using System.Text.RegularExpressions;
-using static FridgeBE.Api.Constants.PermissionConstants;
 
 namespace FridgeBE.Infrastructure.Services
 {
@@ -25,15 +19,15 @@ namespace FridgeBE.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<UserAccount> _passwordHasher;
         private readonly IConfiguration _configuration;
-        private readonly JwtOptions _jwtOptions;
+        private readonly ITokenUtils _tokenUtils;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher<UserAccount> passwordHasher, IConfiguration configuration, JwtOptions jwtOptions)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher<UserAccount> passwordHasher, IConfiguration configuration, ITokenUtils tokenUtils)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
             _configuration = configuration;
-            _jwtOptions = jwtOptions;
+            _tokenUtils = tokenUtils;
 
             UserAccountRepository = (_unitOfWork.Repository<UserAccount>() as IUserAccountRepository)!;
             UserLoginRepository = (_unitOfWork.Repository<UserLogin>() as IUserLoginRepository)!;
@@ -42,13 +36,13 @@ namespace FridgeBE.Infrastructure.Services
         public IUserAccountRepository UserAccountRepository { get; set; }
         public IUserLoginRepository UserLoginRepository { get; set; }
 
-        public async Task<UserAccountModel> CreateUser(UserRegisterRequest request)
+        public async Task<RegisterResponseModel> CreateUser(UserRegisterRequest request)
         {
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-                return new UserAccountModel(HttpStatusCode.BadRequest, "Email and Password are required");
+                return new RegisterResponseModel(HttpStatusCode.BadRequest, "Email and Password are required");
 
             if (!Regex.IsMatch(request.Email, "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"))
-                return new UserAccountModel(HttpStatusCode.BadRequest, "Email is invalid");
+                return new RegisterResponseModel(HttpStatusCode.BadRequest, "Email is invalid");
 
             // if email is existed, send mail to confirm "Somebody tried to register your account.
             //      If this was you please ignore this mail. If you forgot your password, use the forgot password link on the login page"
@@ -56,7 +50,7 @@ namespace FridgeBE.Infrastructure.Services
             UserAccount? userAccount = UserAccountRepository.GetByEmail(request.Email);
 
             if (userAccount != null)
-                return new UserAccountModel(HttpStatusCode.BadRequest, "Unrecognized email or password");
+                return new RegisterResponseModel(HttpStatusCode.BadRequest, "Unrecognized email or password");
 
             PasswordUtils.HashPassword(request.Password, out string passwordHash, out string passwordSalt);
 
@@ -72,53 +66,57 @@ namespace FridgeBE.Infrastructure.Services
             };
 
             await UserAccountRepository.UpdateAndSaveAsync(userAccount);
-            return _mapper.Map<UserAccountModel>(userAccount);
+            return _mapper.Map<RegisterResponseModel>(userAccount);
         }
 
-        public async Task<UserAccountModel> SignInByPassword(UserLoginRequest request)
+        public async Task<LoginResponseModel> SignInByPassword(UserLoginRequest request)
         {
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-                return new UserAccountModel(HttpStatusCode.BadRequest, "Email and Password are required");
+                return new LoginResponseModel(HttpStatusCode.BadRequest, "Email and Password are required");
 
             UserAccount? userAccount = UserAccountRepository.GetByEmail(request.Email, includeUserLogin: true);
             if (userAccount == null)
-                return new UserAccountModel(HttpStatusCode.BadRequest, "Unrecognized email or password");
+                return new LoginResponseModel(HttpStatusCode.BadRequest, "Unrecognized email or password");
 
             bool result = PasswordUtils.VerifyPasswordHash(request.Password, userAccount.UserLogin.PasswordHash, userAccount.UserLogin.PasswordSalt);
 
             if (!result)
-                return new UserAccountModel(HttpStatusCode.Unauthorized, "Invalid email or password");
+                return new LoginResponseModel(HttpStatusCode.Unauthorized, "Invalid email or password");
 
             // create token
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            Tuple<string, DateTime> accessToken = _tokenUtils.GenerateAccessToken(userAccount.Id.ToString(), userAccount.Name, userAccount.UserLogin.Email);
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, userAccount.Id.ToString()),
-                new Claim(ClaimTypes.Name, userAccount.Name),
-                new Claim(ClaimTypes.Email, request.Email),
-                new Claim(PermissionConstants.ClaimType, View.AllIngredients),
-                new Claim(PermissionConstants.ClaimType, Edit.Ingredient)
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: _jwtOptions.Issuer, 
-                audience: _jwtOptions.Audience, 
-                claims: claims, 
-                expires: DateTime.Now.AddSeconds(_jwtOptions.ExpirationSeconds),
-                signingCredentials: credentials
-                );
-
-            string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
-            userAccount.UserLogin.Token = tokenString;
+            Tuple<string, DateTime> refreshToken = _tokenUtils.GenerateRefreshToken(userAccount.Id.ToString());
+            userAccount.UserLogin.RefreshToken = refreshToken.Item1;
+            userAccount.UserLogin.RefreshTokenExpireTime = refreshToken.Item2;
             await _unitOfWork.SaveChangeAsync();
 
-            UserAccountModel model = _mapper.Map<UserAccountModel>(userAccount);
-            model.Token = tokenString;
-
+            LoginResponseModel model = _mapper.Map<LoginResponseModel>(userAccount);
+            model.AccessToken = accessToken.Item1;
+            model.AccessTokenExpireTime = accessToken.Item2;
             return model;
+        }
+
+        public async Task<RefreshTokenModel> RefreshToken(RefreshTokenRequest request)
+        {
+            UserAccount? userAccount = UserAccountRepository.GetByToken(request.UserId, request.RefreshToken);
+
+            if (userAccount == null)
+                return new RefreshTokenModel(HttpStatusCode.BadRequest, "User is not existed");
+
+            bool isValidToken = await _tokenUtils.ValidateRefreshToken(request.RefreshToken);
+
+            if (!isValidToken)
+                return new RefreshTokenModel(HttpStatusCode.BadRequest, "Invalid token");
+
+            Tuple<string, DateTime> accessToken = _tokenUtils.GenerateAccessToken(userAccount.Id.ToString(), userAccount.Name, userAccount.UserLogin.Email);
+
+            return new RefreshTokenModel
+            {
+                AccessToken = accessToken.Item1,
+                RefreshToken = userAccount.UserLogin.RefreshToken!,
+                AccessTokenExpireTime = accessToken.Item2
+            };
         }
     }
 }

@@ -21,5 +21,12 @@ namespace FridgeBE.Infrastructure.Repositories
 
             return result.FirstOrDefault();
         }
+
+        public UserAccount? GetByToken(Guid id, string token)
+        {
+            IQueryable<UserAccount> result = DbSet.Where(ua => ua.Id == id && ua.UserLogin.RefreshToken == token).Include(ua => ua.UserLogin);
+
+            return result.FirstOrDefault();
+        }
     }
 }

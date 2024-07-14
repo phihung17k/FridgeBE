@@ -4,6 +4,7 @@
         string Key,
         string Issuer,
         string Audience,
-        int ExpirationSeconds
+        int AccessTokenExpirationSeconds,
+        int RefreshTokenExpirationDays
     );
 }

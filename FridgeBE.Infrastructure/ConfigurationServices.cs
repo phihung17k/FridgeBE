@@ -10,6 +10,8 @@ using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using FridgeBE.Core.Entities;
+using FridgeBE.Core.Interfaces.IUtils;
+using FridgeBE.Infrastructure.Utils;
 
 namespace FridgeBE.Infrastructure
 {
@@ -42,6 +44,8 @@ namespace FridgeBE.Infrastructure
             services.AddScoped<IIngredientRepository, IngredientRepository>();
 
             services.AddScoped<IPasswordHasher<UserAccount>, PasswordHasher<UserAccount>>();
+
+            services.AddTransient<ITokenUtils, TokenUtils>();
         }
     }
 }

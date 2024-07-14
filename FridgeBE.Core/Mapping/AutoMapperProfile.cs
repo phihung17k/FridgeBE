@@ -14,14 +14,14 @@ namespace FridgeBE.Core.Mapping
             CreateMap<Recipe, RecipeModel>().ReverseMap();
             CreateMap<Step, StepModel>().ReverseMap();
 
-            CreateMap<UserAccount, UserAccountModel>()
-                .ForMember(uam => uam.Email, opt =>
-                {
-                    //opt.AllowNull();
-                    //opt.PreCondition(ua => ua.UserLogin != null);
-                    opt.MapFrom(ua => ua.UserLogin.Email);
-                })
-                .ForMember(uam => uam.Token, opt => opt.MapFrom(ua => ua.UserLogin.Token))
+            CreateMap<UserAccount, RegisterResponseModel>()
+                .ForMember(uam => uam.Email, opt => opt.MapFrom(ua => ua.UserLogin.Email))
+                .ReverseMap();
+
+            CreateMap<UserAccount, LoginResponseModel>()
+                .ForMember(uam => uam.Email, opt => opt.MapFrom(ua => ua.UserLogin.Email))
+                .ForMember(uam => uam.RefreshToken, opt => opt.MapFrom(ua => ua.UserLogin.RefreshToken))
+                .ForMember(uam => uam.RefreshTokenExpireTime, opt => opt.MapFrom(ua => ua.UserLogin.RefreshTokenExpireTime))
                 .ReverseMap();
         }
     }

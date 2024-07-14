@@ -2,12 +2,12 @@
 
 namespace FridgeBE.Core.Models.ResponseModels
 {
-    public class UserAccountModel : ResponseModelBase
+    public class RegisterResponseModel : ResponseModelBase
     {
-        public UserAccountModel()
+        public RegisterResponseModel()
         { }
 
-        public UserAccountModel(HttpStatusCode statusCode, string errorMessage) : base(statusCode, errorMessage)
+        public RegisterResponseModel(HttpStatusCode statusCode, string errorMessage) : base(statusCode, errorMessage)
         { }
 
         public Guid Id { get; set; }
@@ -19,7 +19,5 @@ namespace FridgeBE.Core.Models.ResponseModels
         public DateTime? DateOfBirth { get; set; }
 
         public string Email { get; set; } = null!;
-
-        public string? Token { get; set; }
     }
 }

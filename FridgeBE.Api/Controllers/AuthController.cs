@@ -17,9 +17,9 @@ namespace FridgeBE.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserAccountModel>> Register([FromBody] UserRegisterRequest request)
+        public async Task<ActionResult<RegisterResponseModel>> Register([FromBody] UserRegisterRequest request)
         {
-            UserAccountModel result = await _userService.CreateUser(request);
+            RegisterResponseModel result = await _userService.CreateUser(request);
 
             return Ok(result);
         }
@@ -27,7 +27,15 @@ namespace FridgeBE.Api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] UserLoginRequest request)
         {
-            UserAccountModel result = await _userService.SignInByPassword(request);
+            LoginResponseModel result = await _userService.SignInByPassword(request);
+
+            return Ok(result);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        {
+            RefreshTokenModel result = await _userService.RefreshToken(request);
 
             return Ok(result);
         }
