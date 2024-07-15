@@ -97,6 +97,11 @@ namespace FridgeBE.Api
                     }
                 });
             });
+
+            services.AddHttpsRedirection(httpRedirectionOptions =>
+            {
+                httpRedirectionOptions.HttpsPort = 443;
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -104,17 +109,17 @@ namespace FridgeBE.Api
             // Configure the HTTP request pipeline.
             if (env.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
             app.ConfigureExceptionHandler(env.IsDevelopment());
-            //app.UseHsts();
-            //if (!env.IsDevelopment())
-            //{
-            //    app.UseExceptionHandler("/Error");
-            //    app.UseHsts();
-            //}
+
+            if (!env.IsDevelopment())
+            {
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
 
