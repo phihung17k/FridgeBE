@@ -46,3 +46,9 @@ Flow Token
   |        |                                           |               |
   |        |<-(H)----------- Access Token -------------|               |
   +--------+           & Optional Refresh Token        +---------------+
+
+
+### Publish IIS:
+- web.config contains local module (AspNetCoreModuleV2), the module refer from <globalModules> in %windir%\System32\inetsrv\config\applicationHost.config.
+- AspNetCoreModuleV2 in C:\Program Files\IIS\Asp.Net Core Module\V2, by install dotnet hosting server
+- Other module is installed by **appCmd** or **Turn Windows features on or off**

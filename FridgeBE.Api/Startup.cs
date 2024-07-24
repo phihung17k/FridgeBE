@@ -98,10 +98,10 @@ namespace FridgeBE.Api
                 });
             });
 
-            services.AddHttpsRedirection(httpRedirectionOptions =>
-            {
-                httpRedirectionOptions.HttpsPort = 443;
-            });
+            //services.AddHttpsRedirection(httpRedirectionOptions =>
+            //{
+            //    httpRedirectionOptions.HttpsPort = 443;
+            //});
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -121,7 +121,7 @@ namespace FridgeBE.Api
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
