@@ -12,9 +12,13 @@ namespace FridgeBE.Core.Entities
 
         public string? ImageUrl { get; set; }
 
+        // foreign
+        public int CategoryId { get; set; }
+
+        public Category Category { get; set; }
+
         public List<Recipe> Recipes { get; set; } = [];
 
-        public Ingredient()
-        { }
+        public Ingredient() { }
     }
 }

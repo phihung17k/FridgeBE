@@ -10,14 +10,19 @@ namespace FridgeBE.Infrastructure.Data.EntityConfiguration
         {
             builder.ToTable(nameof(UserAccount).ToLowerInvariant());
 
-            builder.HasOne(uc => uc.UserLogin)
+            builder.HasOne(ua => ua.UserLogin)
                    .WithOne(ul => ul.UserAccount)
                    .HasForeignKey<UserLogin>(ul => ul.UserAccountId)
                    .IsRequired(false);
 
-            builder.HasMany(uc => uc.Permissions)
+            builder.HasMany(ua => ua.Permissions)
                    .WithMany(p => p.UserAccounts)
                    .UsingEntity<UserAccountPermission>();
+
+            builder.HasMany(ua => ua.Recipes)
+                   .WithOne(r => r.UserAccount)
+                   .HasForeignKey(r => r.UserAccountId)
+                   .IsRequired(false);
         }
     }
 }

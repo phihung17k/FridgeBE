@@ -6,11 +6,20 @@ namespace FridgeBE.Core.Entities
     {
         public Guid Id { get; set; }
 
-        public string Author { get; set; }
+        public string Name { get; set; } = null!;
 
         public string? Description { get; set; }
 
-        public string? Image { get; set; }
+        public DateTimeOffset? CookingTime { get; set; }
+
+        public int? ServingSize { get; set; }
+
+        public string? ImageUrl { get; set; }
+
+        // foreign
+        public Guid UserAccountId { get; set; } // author
+
+        public UserAccount UserAccount { get; set; } 
 
         public List<Step> Steps { get; set; } = [];
 
