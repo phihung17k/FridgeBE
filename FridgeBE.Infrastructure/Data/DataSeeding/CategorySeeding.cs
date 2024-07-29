@@ -5,15 +5,16 @@ namespace FridgeBE.Infrastructure.Data.DataSeeding
 {
     public class CategorySeeding
     {
-        public static List<Category> SeedCategories()
+        public static IEnumerable<Category> SeedCategories()
         {
             CategoryEnum[] categories = Enum.GetValues<CategoryEnum>();
             for (int i = 1; i < categories.Length; i++)
             {
-                //yield new Category
-                //{
-                    
-                //}
+                yield return new Category
+                {
+                    Id = i,
+                    Name = categories[i].ToString(),
+                };
             }
         }
     }
