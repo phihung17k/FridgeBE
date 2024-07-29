@@ -1,4 +1,5 @@
 ﻿using FridgeBE.Core.Entities;
+using FridgeBE.Core.Enums;
 
 namespace FridgeBE.Infrastructure.Data.DataSeeding
 {
@@ -6,48 +7,14 @@ namespace FridgeBE.Infrastructure.Data.DataSeeding
     {
         public static List<Category> SeedCategories()
         {
-            int i = 1;
-            var list = new List<Category>
+            CategoryEnum[] categories = Enum.GetValues<CategoryEnum>();
+            for (int i = 1; i < categories.Length; i++)
             {
-                new Category
-                {
-                    Id = i++,
-                    Name = "Fruit"
-                },
-                new Category
-                {
-                    Id = i++,
-                    Name = "Nut"
-                },
-                new Category
-                {
-                    Id = i++,
-                    Name = "Milk"
-                },
-                new Category
-                {
-                    Id = i++,
-                    Name = "Spice"
-                },
-                new Category
-                {
-                    Id = i++,
-                    Name = "Meat"
-                },
-                new Category
-                {
-                    Id = i++,
-                    Name = "Vegetable"
-                },
-                new Category
-                {
-                    Id = i++,
-                    Name = "Rice",
-                    Description = "Product from rice"
-                }
-            };
-
-            return list;
+                //yield new Category
+                //{
+                    
+                //}
+            }
         }
     }
 }
