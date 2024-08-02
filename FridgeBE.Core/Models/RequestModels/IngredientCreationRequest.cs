@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FridgeBE.Core.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace FridgeBE.Core.Models.RequestModels
@@ -11,5 +12,7 @@ namespace FridgeBE.Core.Models.RequestModels
         public string? Description { get; set; }
 
         public IFormFile? Image { get; set; }
+
+        public CategoryEnum Category { get; set; }
     }
 }
