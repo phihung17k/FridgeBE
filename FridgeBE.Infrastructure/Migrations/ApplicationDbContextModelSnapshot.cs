@@ -59,6 +59,50 @@ namespace FridgeBE.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("category", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Fruit"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Vegetable"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Meat"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Nut"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Milk"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Rice"
+                        });
                 });
 
             modelBuilder.Entity("FridgeBE.Core.Entities.Ingredient", b =>

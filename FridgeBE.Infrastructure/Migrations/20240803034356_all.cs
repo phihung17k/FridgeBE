@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace FridgeBE.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class all : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,15 +18,14 @@ namespace FridgeBE.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ingredient",
+                name: "category",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ImageUrl = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CreateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     UpdateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
@@ -38,7 +39,7 @@ namespace FridgeBE.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ingredient", x => x.Id);
+                    table.PrimaryKey("PK_category", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -56,33 +57,6 @@ namespace FridgeBE.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_permission", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "recipe",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Author = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Image = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
-                    UpdateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
-                    DeleteTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
-                    CreateBy = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    UpdateBy = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    DeleteBy = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_recipe", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -113,49 +87,69 @@ namespace FridgeBE.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ingredientrecipe",
+                name: "ingredient",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    IngredientId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    RecipeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ImageUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CreateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    UpdateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    DeleteTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    CreateBy = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UpdateBy = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DeleteBy = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ingredientrecipe", x => x.Id);
+                    table.PrimaryKey("PK_ingredient", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ingredientrecipe_ingredient_IngredientId",
-                        column: x => x.IngredientId,
-                        principalTable: "ingredient",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ingredientrecipe_recipe_RecipeId",
-                        column: x => x.RecipeId,
-                        principalTable: "recipe",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_ingredient_category_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "category",
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "step",
+                name: "recipe",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Content = table.Column<string>(type: "longtext", nullable: false)
+                    Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    RecipeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                    CookingTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    ServingSize = table.Column<int>(type: "int", nullable: true),
+                    ImageUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserAccountId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    CreateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    UpdateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    DeleteTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    CreateBy = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UpdateBy = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DeleteBy = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_step", x => x.Id);
+                    table.PrimaryKey("PK_recipe", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_step_recipe_RecipeId",
-                        column: x => x.RecipeId,
-                        principalTable: "recipe",
+                        name: "FK_recipe_useraccount_UserAccountId",
+                        column: x => x.UserAccountId,
+                        principalTable: "useraccount",
                         principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -215,6 +209,79 @@ namespace FridgeBE.Infrastructure.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "ingredientrecipe",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IngredientQuantity = table.Column<int>(type: "int", nullable: true),
+                    IngredientQuantityUnit = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IngredientId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    RecipeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ingredientrecipe", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ingredientrecipe_ingredient_IngredientId",
+                        column: x => x.IngredientId,
+                        principalTable: "ingredient",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ingredientrecipe_recipe_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "recipe",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "step",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Content = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    StepOrder = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ImageUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RecipeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_step", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_step_recipe_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "recipe",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "category",
+                columns: new[] { "Id", "CreateBy", "CreateTime", "DeleteBy", "DeleteTime", "Description", "Name", "UpdateBy", "UpdateTime" },
+                values: new object[,]
+                {
+                    { 1, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Fruit", null, null },
+                    { 2, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Vegetable", null, null },
+                    { 3, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Meat", null, null },
+                    { 4, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Nut", null, null },
+                    { 5, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Milk", null, null },
+                    { 6, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Rice", null, null }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ingredient_CategoryId",
+                table: "ingredient",
+                column: "CategoryId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_ingredientrecipe_IngredientId",
                 table: "ingredientrecipe",
@@ -224,6 +291,11 @@ namespace FridgeBE.Infrastructure.Migrations
                 name: "IX_ingredientrecipe_RecipeId",
                 table: "ingredientrecipe",
                 column: "RecipeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_recipe_UserAccountId",
+                table: "recipe",
+                column: "UserAccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_step_RecipeId",
@@ -270,6 +342,9 @@ namespace FridgeBE.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "permission");
+
+            migrationBuilder.DropTable(
+                name: "category");
 
             migrationBuilder.DropTable(
                 name: "useraccount");

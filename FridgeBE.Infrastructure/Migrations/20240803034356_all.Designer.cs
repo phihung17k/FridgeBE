@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FridgeBE.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240715081300_Initial")]
-    partial class Initial
+    [Migration("20240803034356_all")]
+    partial class all
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,11 +25,97 @@ namespace FridgeBE.Infrastructure.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("FridgeBE.Core.Entities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreateBy")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DeleteBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset?>("DeleteTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UpdateBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset?>("UpdateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("category", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Fruit"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Vegetable"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Meat"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Nut"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Milk"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreateBy = "10:43:56 03-08-2024",
+                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Rice"
+                        });
+                });
+
             modelBuilder.Entity("FridgeBE.Core.Entities.Ingredient", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("CreateBy")
                         .IsRequired()
@@ -62,6 +148,8 @@ namespace FridgeBE.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("ingredient", (string)null);
                 });
 
@@ -75,6 +163,12 @@ namespace FridgeBE.Infrastructure.Migrations
 
                     b.Property<Guid>("IngredientId")
                         .HasColumnType("char(36)");
+
+                    b.Property<int?>("IngredientQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IngredientQuantityUnit")
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("RecipeId")
                         .HasColumnType("char(36)");
@@ -114,9 +208,8 @@ namespace FridgeBE.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<DateTimeOffset?>("CookingTime")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("CreateBy")
                         .IsRequired()
@@ -134,8 +227,15 @@ namespace FridgeBE.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Image")
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("ServingSize")
+                        .HasColumnType("int");
 
                     b.Property<string>("UpdateBy")
                         .HasColumnType("longtext");
@@ -143,7 +243,12 @@ namespace FridgeBE.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("UpdateTime")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<Guid>("UserAccountId")
+                        .HasColumnType("char(36)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserAccountId");
 
                     b.ToTable("recipe", (string)null);
                 });
@@ -157,8 +262,15 @@ namespace FridgeBE.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("longtext");
+
                     b.Property<Guid>("RecipeId")
                         .HasColumnType("char(36)");
+
+                    b.Property<string>("StepOrder")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -267,6 +379,15 @@ namespace FridgeBE.Infrastructure.Migrations
                     b.ToTable("userlogin", (string)null);
                 });
 
+            modelBuilder.Entity("FridgeBE.Core.Entities.Ingredient", b =>
+                {
+                    b.HasOne("FridgeBE.Core.Entities.Category", "Category")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("FridgeBE.Core.Entities.IngredientRecipe", b =>
                 {
                     b.HasOne("FridgeBE.Core.Entities.Ingredient", null)
@@ -280,6 +401,15 @@ namespace FridgeBE.Infrastructure.Migrations
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FridgeBE.Core.Entities.Recipe", b =>
+                {
+                    b.HasOne("FridgeBE.Core.Entities.UserAccount", "UserAccount")
+                        .WithMany("Recipes")
+                        .HasForeignKey("UserAccountId");
+
+                    b.Navigation("UserAccount");
                 });
 
             modelBuilder.Entity("FridgeBE.Core.Entities.Step", b =>
@@ -315,6 +445,11 @@ namespace FridgeBE.Infrastructure.Migrations
                     b.Navigation("UserAccount");
                 });
 
+            modelBuilder.Entity("FridgeBE.Core.Entities.Category", b =>
+                {
+                    b.Navigation("Ingredients");
+                });
+
             modelBuilder.Entity("FridgeBE.Core.Entities.Recipe", b =>
                 {
                     b.Navigation("Steps");
@@ -322,6 +457,8 @@ namespace FridgeBE.Infrastructure.Migrations
 
             modelBuilder.Entity("FridgeBE.Core.Entities.UserAccount", b =>
                 {
+                    b.Navigation("Recipes");
+
                     b.Navigation("UserLogin")
                         .IsRequired();
                 });
