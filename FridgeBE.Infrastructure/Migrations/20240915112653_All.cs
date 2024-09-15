@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FridgeBE.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class all : Migration
+    public partial class All : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -269,12 +269,12 @@ namespace FridgeBE.Infrastructure.Migrations
                 columns: new[] { "Id", "CreateBy", "CreateTime", "DeleteBy", "DeleteTime", "Description", "Name", "UpdateBy", "UpdateTime" },
                 values: new object[,]
                 {
-                    { 1, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Fruit", null, null },
-                    { 2, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Vegetable", null, null },
-                    { 3, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Meat", null, null },
-                    { 4, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Nut", null, null },
-                    { 5, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Milk", null, null },
-                    { 6, "10:43:56 03-08-2024", new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, null, null, "Rice", null, null }
+                    { 1, "admin", new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)), null, null, null, "Fruit", null, null },
+                    { 2, "admin", new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)), null, null, null, "Vegetable", null, null },
+                    { 3, "admin", new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)), null, null, null, "Meat", null, null },
+                    { 4, "admin", new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)), null, null, null, "Nut", null, null },
+                    { 5, "admin", new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)), null, null, null, "Milk", null, null },
+                    { 6, "admin", new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)), null, null, null, "Rice", null, null }
                 });
 
             migrationBuilder.CreateIndex(

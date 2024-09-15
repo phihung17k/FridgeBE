@@ -77,7 +77,7 @@ namespace FridgeBE.Infrastructure.Data
                 switch (entityEntry.State)
                 {
                     case EntityState.Modified:
-                        if (string.Equals("delete", _accessor.HttpContext.Request.Method, StringComparison.InvariantCultureIgnoreCase))
+                        if (string.Equals("delete", _accessor.HttpContext!.Request.Method, StringComparison.InvariantCultureIgnoreCase))
                         {
                             // log delete action
                             if (!forceDelete)

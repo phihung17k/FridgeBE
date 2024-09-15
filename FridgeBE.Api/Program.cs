@@ -1,6 +1,4 @@
 using FridgeBE.Api;
-using FridgeBE.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);

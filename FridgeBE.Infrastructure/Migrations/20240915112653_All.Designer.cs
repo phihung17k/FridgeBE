@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FridgeBE.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240803034356_all")]
-    partial class all
+    [Migration("20240915112653_All")]
+    partial class All
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -67,43 +67,43 @@ namespace FridgeBE.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreateBy = "10:43:56 03-08-2024",
-                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreateBy = "admin",
+                            CreateTime = new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)),
                             Name = "Fruit"
                         },
                         new
                         {
                             Id = 2,
-                            CreateBy = "10:43:56 03-08-2024",
-                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreateBy = "admin",
+                            CreateTime = new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)),
                             Name = "Vegetable"
                         },
                         new
                         {
                             Id = 3,
-                            CreateBy = "10:43:56 03-08-2024",
-                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreateBy = "admin",
+                            CreateTime = new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)),
                             Name = "Meat"
                         },
                         new
                         {
                             Id = 4,
-                            CreateBy = "10:43:56 03-08-2024",
-                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreateBy = "admin",
+                            CreateTime = new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)),
                             Name = "Nut"
                         },
                         new
                         {
                             Id = 5,
-                            CreateBy = "10:43:56 03-08-2024",
-                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreateBy = "admin",
+                            CreateTime = new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)),
                             Name = "Milk"
                         },
                         new
                         {
                             Id = 6,
-                            CreateBy = "10:43:56 03-08-2024",
-                            CreateTime = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreateBy = "admin",
+                            CreateTime = new DateTimeOffset(new DateTime(2024, 9, 15, 18, 26, 52, 918, DateTimeKind.Unspecified).AddTicks(8697), new TimeSpan(0, 7, 0, 0, 0)),
                             Name = "Rice"
                         });
                 });

@@ -1,14 +1,14 @@
-﻿using FridgeBE.Infrastructure;
-using FridgeBE.Core;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using FridgeBE.Core.ValueObjects;
-using Microsoft.OpenApi.Models;
+﻿using FridgeBE.Api.Authorization;
 using FridgeBE.Api.Filters;
 using FridgeBE.Api.Middlewares;
+using FridgeBE.Core;
+using FridgeBE.Core.ValueObjects;
+using FridgeBE.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using FridgeBE.Api.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace FridgeBE.Api
 {

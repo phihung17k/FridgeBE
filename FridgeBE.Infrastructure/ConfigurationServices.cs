@@ -1,17 +1,19 @@
-﻿using FridgeBE.Core.Interfaces.IRepositories;
+﻿using FridgeBE.Core.Entities;
+using FridgeBE.Core.Interfaces.IRepositories;
+using FridgeBE.Core.Interfaces.IServices;
+using FridgeBE.Core.Interfaces.IUtils;
 using FridgeBE.Infrastructure.Data;
 using FridgeBE.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using FridgeBE.Infrastructure.Services;
+using FridgeBE.Infrastructure.Utils;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using FridgeBE.Core.Interfaces.IServices;
-using FridgeBE.Infrastructure.Services;
-using Microsoft.AspNetCore.Identity;
-using FridgeBE.Core.Entities;
-using FridgeBE.Core.Interfaces.IUtils;
-using FridgeBE.Infrastructure.Utils;
 
 namespace FridgeBE.Infrastructure
 {
@@ -30,8 +32,13 @@ namespace FridgeBE.Infrastructure
 
                 option.UseLoggerFactory(LoggerFactory.Create(configure => configure.AddConsole()));
                 option.LogTo(Console.WriteLine, LogLevel.Debug, DbContextLoggerOptions.DefaultWithLocalTime);
-                option.EnableSensitiveDataLogging();
-                option.EnableDetailedErrors();
+
+                IWebHostEnvironment env = services.BuildServiceProvider().GetRequiredService<IWebHostEnvironment>();
+                if (env.IsDevelopment())
+                {
+                    option.EnableSensitiveDataLogging();
+                    option.EnableDetailedErrors();
+                }
             });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
