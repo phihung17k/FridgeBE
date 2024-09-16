@@ -6,6 +6,7 @@ using FridgeBE.Infrastructure.Data;
 using FridgeBE.Infrastructure.Repositories;
 using FridgeBE.Infrastructure.Services;
 using FridgeBE.Infrastructure.Utils;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FridgeBE.Infrastructure
 {
-    public static class ConfigurationServices
+    public static class Startup
     {
         public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
@@ -53,6 +54,11 @@ namespace FridgeBE.Infrastructure
             services.AddScoped<IPasswordHasher<UserAccount>, PasswordHasher<UserAccount>>();
 
             services.AddTransient<ITokenUtils, TokenUtils>();
+        }
+
+        public static void InitCategoryStorage(this IApplicationBuilder app)
+        {
+            //CategoryStorage.GetAllCategories();
         }
     }
 }

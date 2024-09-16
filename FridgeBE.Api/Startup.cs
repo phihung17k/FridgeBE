@@ -133,6 +133,8 @@ namespace FridgeBE.Api
                 endpoints.MapControllers();
                 //endpoints.MapIdentityApi<IdentityUser>();
             });
+
+            app.InitCategoryStorage();
         }
     }
 }

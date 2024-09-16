@@ -1,13 +1,13 @@
 ﻿using FridgeBE.Core.Entities.Common;
+using FridgeBE.Core.Enums;
 
 namespace FridgeBE.Core.Entities
 {
-    public class Category : AuditableEntity
+    public partial class Category : AuditableEntity
     {
         public int Id { get; set; }
-
         public string Name { get; set; }
-
+        public string LocalName { get; set; }
         public string? Description {  get; set; }
 
         // foreign
