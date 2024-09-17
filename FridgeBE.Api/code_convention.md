@@ -46,3 +46,22 @@ Console.WriteLine("first int: " + stopwatch.Elapsed);
 int secondInt = await second;
 Console.WriteLine("second int: " + stopwatch.Elapsed);
 ```
+
+----------------------------------------------------------
+In Object:
+`a.Equals(object? b)`: throw `NullReferenceException` when it is invoked on a `null` reference (a must be != null)
+`ReferenceEquals(object? a, object? b)`: **not** throw `NullReferenceException`
+`==`: same `ReferenceEquals`
+
+object o1 = null;
+object o2 = new object();
+
+ReferenceEquals(o1, o1); //true
+ReferenceEquals(o1, o2); //false
+ReferenceEquals(o2, o1); //false
+ReferenceEquals(o2, o2); //true
+
+o1.Equals(o1); //NullReferenceException
+o1.Equals(o2); //NullReferenceException
+o2.Equals(o1); //false
+o2.Equals(o2); //true

@@ -1,13 +1,14 @@
 ﻿using FridgeBE.Core.Entities;
 using FridgeBE.Core.Enums;
+using FridgeBE.Core.Interfaces.IUtils;
 using System.ComponentModel;
 using System.Reflection;
 
 namespace FridgeBE.Infrastructure.Data
 {
-    public class CategoryStorage
+    public static class CategoryStorage
     {
-        private static readonly Dictionary<int, Category> _categories = [];
+        private static readonly Dictionary<int, Category> _categories;
         private static readonly Dictionary<CategoryEnum, string> _categoryLocalNames = new()
         {
             { CategoryEnum.Unknown, "Unknown" },
@@ -63,18 +64,6 @@ namespace FridgeBE.Infrastructure.Data
         public static Category GetCategoryById(int id)
         {
             return _categories[id];
-        }
-
-        // CategoryEnum = Category
-        public static implicit operator CategoryEnum(Category category)
-        {
-            return category == null ? CategoryEnum.Unknown : (CategoryEnum) category.Id;
-        }
-
-        // Category = (Category)CategoryEnum
-        public static explicit operator Category(CategoryEnum category)
-        {
-            //return CategoryStorage
         }
     }
 }

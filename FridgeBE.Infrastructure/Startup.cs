@@ -2,6 +2,7 @@
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Interfaces.IUtils;
+using FridgeBE.Core.Services;
 using FridgeBE.Infrastructure.Data;
 using FridgeBE.Infrastructure.Repositories;
 using FridgeBE.Infrastructure.Services;
@@ -56,9 +57,10 @@ namespace FridgeBE.Infrastructure
             services.AddTransient<ITokenUtils, TokenUtils>();
         }
 
-        public static void InitCategoryStorage(this IApplicationBuilder app)
+        public static void InitCategoryStorage(this IApplicationBuilder _)
         {
-            //CategoryStorage.GetAllCategories();
+            //CategoryStorageService.Initialize(CategoryStorage.GetAllCategories());
+            CategoryStorageService.GetCategoryById = CategoryStorage.GetCategoryById;
         }
     }
 }
