@@ -11,6 +11,6 @@ namespace FridgeBE.Core.Services
         //    CachedCategories = cachedCategories;
         //}
 
-        public static Func<int, Category> GetCategoryById;
+        public static Func<int, Category> GetCategoryById { get; set; }
     }
 }

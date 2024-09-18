@@ -7,9 +7,8 @@ using FridgeBE.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using Xunit;
 
-namespace FridgeBE.Tests.Controllers
+namespace FridgeBE.Tests.Controller
 {
     public class IngredientControllerTest
     {
@@ -22,7 +21,8 @@ namespace FridgeBE.Tests.Controllers
             var id = Guid.NewGuid();
             ActionResult<IngredientModel> model = await controller.GetById(id);
 
-            
+
         }
+
     }
 }

@@ -1,5 +1,7 @@
-﻿using FridgeBE.Core.Exceptions;
-using FridgeBE.Core.Models;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using FridgeBE.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 
@@ -73,6 +75,43 @@ namespace FridgeBE.Infrastructure.Utils
 
                 return Path.GetFullPath(filePath);
             }
+        }
+
+        // <category id, [ingredient]>
+        public static Dictionary<string, List<string>> ReadIngredientsExcelFile()
+        {
+            Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
+            string filePath = @"..\..\..\..\Food.xlsx";
+            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filePath, false))
+            {
+                WorkbookPart workbookPart = spreadsheet.WorkbookPart ?? spreadsheet.AddWorkbookPart();
+                IEnumerable<Sheet> sheets = workbookPart.Workbook.GetFirstChild<Sheets>()!.Elements<Sheet>();
+                OpenXmlElementList childElements = workbookPart.SharedStringTablePart!.SharedStringTable.ChildElements;
+
+                for (int i = 1; i < sheets.Count(); i++)
+                {
+                    Sheet sheet = sheets.ElementAt(i);
+                    string sheetName = sheet.Name!.Value!;
+
+                    string sheetId = sheet.Id!.Value!;
+                    SheetData sheetData = ((WorksheetPart) workbookPart.GetPartById(sheetId)).Worksheet.GetFirstChild<SheetData>()!;
+                    IEnumerable<Row> rows = sheetData.Descendants<Row>();
+
+                    List<string> ingredients = new();
+                    for (int j = 0; j < rows.Count(); j++)
+                    {
+                        Row row = rows.ElementAt(j);
+                        Cell cell = row.Descendants<Cell>().ElementAt(0);
+                        if (cell.CellValue?.InnerXml == null)
+                            break;
+
+                        string value = childElements[int.Parse(cell.CellValue!.InnerXml)].InnerText;
+                        ingredients.Add(value);
+                    }
+                    dic.Add(sheetName, ingredients);
+                }
+            }
+            return dic;
         }
     }
 }
