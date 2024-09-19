@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using FridgeBE.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Net;
+using Tuple = System.Tuple;
 
 namespace FridgeBE.Infrastructure.Utils
 {
@@ -77,10 +78,10 @@ namespace FridgeBE.Infrastructure.Utils
             }
         }
 
-        // <category id, [ingredient]>
-        public static Dictionary<string, List<string>> ReadIngredientsExcelFile()
+        // <category id, [ingredient name, ingredient description]>
+        public static Dictionary<string, List<Tuple<string, string>>> ReadIngredientsExcelFile()
         {
-            Dictionary<string, List<string>> dic = [];
+            Dictionary<string, List<Tuple<string, string>>> dic = [];
             string filePath = @"C:\android\test_dotnet\FridgeBE\Food.xlsx";
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filePath, false))
             {
@@ -97,16 +98,21 @@ namespace FridgeBE.Infrastructure.Utils
                     SheetData sheetData = ((WorksheetPart) workbookPart.GetPartById(sheetId)).Worksheet.GetFirstChild<SheetData>()!;
                     IEnumerable<Row> rows = sheetData.Descendants<Row>();
 
-                    List<string> ingredients = new();
+                    List<Tuple<string, string>> ingredients = new();
                     for (int j = 0; j < rows.Count(); j++)
                     {
-                        Row row = rows.ElementAt(j);
-                        Cell cell = row.Descendants<Cell>().ElementAt(0);
-                        if (cell.CellValue?.InnerXml == null)
+                        IEnumerable<Cell> cells = rows.ElementAt(j).Descendants<Cell>();
+                        Cell ingredientCell = cells.ElementAt(3);
+                        Cell descriptionCell = cells.ElementAt(4);
+
+                        string ingredientName = ingredientCell.InnerText;
+                        if (string.IsNullOrEmpty(ingredientName))
                             break;
 
-                        string value = childElements[int.Parse(cell.CellValue!.InnerXml)].InnerText;
-                        ingredients.Add(value);
+                        string name = childElements[int.Parse(ingredientName)].InnerText;
+                        string description = childElements[int.Parse(descriptionCell.InnerText)].InnerText;
+
+                        ingredients.Add(Tuple.Create(name, description));
                     }
                     dic.Add(sheetName, ingredients);
                 }

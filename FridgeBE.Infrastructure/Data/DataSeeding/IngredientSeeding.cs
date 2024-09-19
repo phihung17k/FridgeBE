@@ -8,20 +8,22 @@ namespace FridgeBE.Infrastructure.Data.DataSeeding
     {
         public static IEnumerable<Ingredient> SeedIngredients()
         {
-            Dictionary<string, List<string>> ingredientDic = FileUtils.ReadIngredientsExcelFile();
+            Dictionary<string, List<Tuple<string, string>>> ingredientDic = FileUtils.ReadIngredientsExcelFile();
 
             // key: category name, value: list of ingredient names
             int categoryId = 1;
             var now = DateTimeOffset.Now;
-            foreach (KeyValuePair<string, List<string>> item in ingredientDic)
+            foreach (KeyValuePair<string, List<Tuple<string, string>>> item in ingredientDic)
             {
-                foreach (string ingredientName in item.Value)
+                // string1: name. string2: description
+                foreach (Tuple<string, string> info in item.Value)
                 {
                     yield return new Ingredient
                     {
                         Id = Guid.NewGuid(),
-                        Name = ingredientName,
-                        LocalName = ingredientName,
+                        Name = info.Item1,
+                        LocalName = info.Item1,
+                        Description = info.Item2,
                         CreateBy = AppConstants.Admin,
                         CreateTime = now,
                         CategoryId = categoryId,
