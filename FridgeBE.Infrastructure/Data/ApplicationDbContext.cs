@@ -16,17 +16,15 @@ namespace FridgeBE.Infrastructure.Data
             _accessor = httpContextAccessor;
         }
 
-        public DbSet<UserAccount> UserAccounts { get; set; }
-        public DbSet<UserLogin> UserLogins { get; set; }
-        public DbSet<Permission> Permissions { get; set; }
-        public DbSet<UserAccountPermission> UserAccountPermissions { get; set; }
-
-
-        public DbSet<Ingredient> Ingredients { get; set; }
-        public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<IngredientRecipe> IngredientRecipes { get; set; }
-        public DbSet<Step> Steps { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<IngredientRecipe> IngredientRecipes { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<Step> Steps { get; set; }
+        public DbSet<UserAccount> UserAccounts { get; set; }
+        public DbSet<UserAccountPermission> UserAccountPermissions { get; set; }
+        public DbSet<UserLogin> UserLogins { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -37,24 +35,15 @@ namespace FridgeBE.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            new UserAccountConfiguration().Configure(modelBuilder.Entity<UserAccount>());
-
-            new UserLoginConfiguration().Configure(modelBuilder.Entity<UserLogin>());
-
-            new PermissionConfiguration().Configure(modelBuilder.Entity<Permission>());
-
-            new UserAccountPermissionConfiguration().Configure(modelBuilder.Entity<UserAccountPermission>());
-
-
-            new IngredientConfiguration().Configure(modelBuilder.Entity<Ingredient>());
-
-            new RecipeConfiguration().Configure(modelBuilder.Entity<Recipe>());
-
-            new IngredientRecipeConfiguration().Configure(modelBuilder.Entity<IngredientRecipe>());
-
-            new StepConfiguration().Configure(modelBuilder.Entity<Step>());
-
             new CategoryConfiguration().Configure(modelBuilder.Entity<Category>());
+            new IngredientConfiguration().Configure(modelBuilder.Entity<Ingredient>());
+            new IngredientRecipeConfiguration().Configure(modelBuilder.Entity<IngredientRecipe>());
+            new PermissionConfiguration().Configure(modelBuilder.Entity<Permission>());
+            new RecipeConfiguration().Configure(modelBuilder.Entity<Recipe>());
+            new StepConfiguration().Configure(modelBuilder.Entity<Step>());
+            new UserAccountConfiguration().Configure(modelBuilder.Entity<UserAccount>());
+            new UserAccountPermissionConfiguration().Configure(modelBuilder.Entity<UserAccountPermission>());
+            new UserLoginConfiguration().Configure(modelBuilder.Entity<UserLogin>());
         }
 
         public new int SaveChanges(bool forceDelete = false)

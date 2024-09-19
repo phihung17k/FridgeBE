@@ -1,6 +1,6 @@
-﻿using FridgeBE.Core.Entities;
+﻿using FridgeBE.Core.Constants;
+using FridgeBE.Core.Entities;
 using FridgeBE.Core.Enums;
-using FridgeBE.Core.Interfaces.IUtils;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -8,7 +8,7 @@ namespace FridgeBE.Infrastructure.Data
 {
     public static class CategoryStorage
     {
-        private static readonly Dictionary<int, Category> _categories;
+        private static Dictionary<int, Category> _categories = [];
         private static readonly Dictionary<CategoryEnum, string> _categoryLocalNames = new()
         {
             { CategoryEnum.Unknown, "Unknown" },
@@ -42,8 +42,10 @@ namespace FridgeBE.Infrastructure.Data
             if (_categories.Count > 0)
                 return _categories;
 
-            Dictionary<int, Category> categories = new Dictionary<int, Category>();
-            foreach (CategoryEnum category in Enum.GetValues<CategoryEnum>())
+            Dictionary<int, Category> categories = [];
+            var now = DateTimeOffset.Now;
+            // skip the first category (Unknown)
+            foreach (CategoryEnum category in Enum.GetValues<CategoryEnum>().Skip(1))
             {
                 int categoryId = (int) category;
                 string categoryName = category.ToString();
@@ -55,7 +57,9 @@ namespace FridgeBE.Infrastructure.Data
                     Id = categoryId,
                     Name = categoryName,
                     LocalName = _categoryLocalNames[category],
-                    Description = attribute?.Description ?? categoryName
+                    Description = attribute?.Description ?? categoryName,
+                    CreateBy = AppConstants.Admin,
+                    CreateTime = now,
                 });
             }
             return categories;

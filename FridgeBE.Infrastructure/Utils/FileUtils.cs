@@ -80,8 +80,8 @@ namespace FridgeBE.Infrastructure.Utils
         // <category id, [ingredient]>
         public static Dictionary<string, List<string>> ReadIngredientsExcelFile()
         {
-            Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
-            string filePath = @"..\..\..\..\Food.xlsx";
+            Dictionary<string, List<string>> dic = [];
+            string filePath = @"C:\android\test_dotnet\FridgeBE\Food.xlsx";
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filePath, false))
             {
                 WorkbookPart workbookPart = spreadsheet.WorkbookPart ?? spreadsheet.AddWorkbookPart();

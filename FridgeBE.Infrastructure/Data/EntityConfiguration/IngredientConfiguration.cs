@@ -1,4 +1,5 @@
 ﻿using FridgeBE.Core.Entities;
+using FridgeBE.Infrastructure.Data.DataSeeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,6 +14,8 @@ namespace FridgeBE.Infrastructure.Data.EntityConfiguration
             builder.HasMany(i => i.Recipes)
                    .WithMany(r => r.Ingredients)
                    .UsingEntity<IngredientRecipe>();
+
+            builder.HasData(IngredientSeeding.SeedIngredients());
         }
     }
 }
