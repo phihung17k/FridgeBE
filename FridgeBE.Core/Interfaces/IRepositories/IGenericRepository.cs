@@ -30,6 +30,6 @@ namespace FridgeBE.Core.Interfaces.IRepositories
 
         IReadOnlyList<T> GetReadOnlyList();
         Task<IReadOnlyList<T>> GetReadOnlyListAsync();
-        Task<Pagination<T>> GetPaginationAsync(Expression<Func<T, bool>> predicate, int pageIndex = 0, int pageSize = 10);
+        Task<Pagination<T>> GetPaginationAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, int pageIndex = 1, int pageSize = 10);
     }
 }

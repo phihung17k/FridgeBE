@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FridgeBE.Core.Entities;
+using FridgeBE.Core.Models;
 using FridgeBE.Core.Models.ResponseModels;
 
 namespace FridgeBE.Core.Mapping
@@ -22,6 +23,10 @@ namespace FridgeBE.Core.Mapping
                 .ForMember(uam => uam.Email, opt => opt.MapFrom(ua => ua.UserLogin.Email))
                 .ForMember(uam => uam.RefreshToken, opt => opt.MapFrom(ua => ua.UserLogin.RefreshToken))
                 .ForMember(uam => uam.RefreshTokenExpireTime, opt => opt.MapFrom(ua => ua.UserLogin.RefreshTokenExpireTime))
+                .ReverseMap();
+
+            CreateMap<Pagination<Ingredient>, Pagination<IngredientModel>>()
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
                 .ReverseMap();
         }
     }

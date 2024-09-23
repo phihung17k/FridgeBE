@@ -1,4 +1,5 @@
-﻿using FridgeBE.Core.Entities.Common;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using FridgeBE.Core.Entities.Common;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Models;
 using FridgeBE.Infrastructure.Data;
@@ -157,23 +158,38 @@ namespace FridgeBE.Infrastructure.Repositories
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Pagination<T>> GetPaginationAsync(Expression<Func<T, bool>> predicate, int pageIndex = 1, int pageSize = 10)
+        public async Task<Pagination<T>> GetPaginationAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, int pageIndex = 1, int pageSize = 10)
         {
-            IQueryable<T> filteredItems = _dbSet.Where(predicate);
+            IQueryable<T> filteredItems = _dbSet;
+            if (predicate != null)
+            {
+                filteredItems = _dbSet.Where(predicate);
+            }
 
-            Task<int> itemCountTask = filteredItems.CountAsync();
-            Task<List<T>> itemsTask = filteredItems.Skip((pageIndex - 1) * pageSize)
+            if (orderBy != null)
+            {
+                filteredItems = orderBy(filteredItems);
+            }
+
+            //Task<int> itemCountTask = filteredItems.CountAsync();
+            //Task<List<T>> itemsTask = filteredItems.Skip((pageIndex - 1) * pageSize)
+            //                                       .Take(pageSize)
+            //                                       .AsNoTracking()
+            //                                       .ToListAsync();
+            //await Task.WhenAll(itemCountTask, itemsTask);
+
+            int itemCountTask = await filteredItems.CountAsync();
+            List<T> itemsTask = await filteredItems.Skip((pageIndex - 1) * pageSize)
                                                    .Take(pageSize)
                                                    .AsNoTracking()
                                                    .ToListAsync();
-            await Task.WhenAll(itemCountTask, itemsTask);
 
             var result = new Pagination<T>
             {
-                TotalItemsCount = await itemCountTask,
+                TotalItemsCount = itemCountTask,
                 PageSize = pageSize,
                 PageIndex = pageIndex,
-                Items = await itemsTask
+                Items = itemsTask
             };
 
             return result;

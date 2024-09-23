@@ -4,6 +4,8 @@ namespace FridgeBE.Core.Entities
 {
     public class Ingredient : AuditableEntity
     {
+        public Ingredient() { }
+
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public string LocalName { get; set; } = null!;
@@ -14,6 +16,5 @@ namespace FridgeBE.Core.Entities
         public int CategoryId { get; set; }
         public Category Category { get; set; }
         public List<Recipe> Recipes { get; set; } = [];
-        public Ingredient() { }
     }
 }

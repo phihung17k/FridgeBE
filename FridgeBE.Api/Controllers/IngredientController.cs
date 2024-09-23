@@ -1,5 +1,6 @@
 ﻿using FridgeBE.Api.Authorization;
 using FridgeBE.Core.Interfaces.IServices;
+using FridgeBE.Core.Models;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
 using Microsoft.AspNetCore.Mvc;
@@ -19,17 +20,26 @@ namespace FridgeBE.Api.Controllers
         }
 
         // GET: api/<IngredientController>
-        [HttpGet]
-        [Permission(View.AllIngredients, Edit.Ingredient)]
+        [HttpGet("all")]
+        //[Permission(View.AllIngredients, Edit.Ingredient)]
         public async Task<ActionResult<IReadOnlyList<IngredientModel>>> GetAll()
         {
             IReadOnlyList<IngredientModel> results = await _service.GetAll();
             return Ok(results);
         }
 
+        // GET: api/<IngredientController>
+        [HttpGet]
+        //[Permission(View.AllIngredients, Edit.Ingredient)]
+        public async Task<ActionResult<Pagination<IngredientModel>>> GetPagingIngredientList(int pageIndex = 1, int pageSize = 10)
+        {
+            Pagination<IngredientModel> results = await _service.GetPagingIngredientList(pageIndex, pageSize);
+            return Ok(results);
+        }
+
         // GET api/<IngredientController>/5
         [HttpGet("{id}")]
-        [Permission(View.AllIngredients)]
+        //[Permission(View.AllIngredients)]
         public async Task<ActionResult<IngredientModel>> GetById(Guid id)
         {
             IngredientModel? ingredientModel = await _service.GetDetailIngredient(id);
@@ -39,7 +49,7 @@ namespace FridgeBE.Api.Controllers
 
         // POST api/<IngredientController>
         [HttpPost]
-        [Permission(View.AllIngredients, Edit.Ingredient)]
+        //[Permission(View.AllIngredients, Edit.Ingredient)]
         public async Task<IActionResult> CreateIngredient([FromForm] IngredientCreationRequest ingredientRequest)
         {
             IngredientModel? ingredient = await _service.CreateIngredient(ingredientRequest);

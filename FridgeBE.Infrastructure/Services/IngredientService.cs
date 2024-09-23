@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using FridgeBE.Core.Entities;
 using FridgeBE.Core.Exceptions;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Interfaces.IServices;
+using FridgeBE.Core.Models;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
 using FridgeBE.Infrastructure.Utils;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 
@@ -48,6 +52,12 @@ namespace FridgeBE.Infrastructure.Services
             return _mapper.Map<IReadOnlyList<IngredientModel>>(ingredients);
         }
 
+        public async Task<Pagination<IngredientModel>> GetPagingIngredientList(int pageIndex = 1, int pageSize = 10)
+        {
+            Pagination<Ingredient> ingredients = await Repository.GetPaginationAsync(null, ingredients => ingredients.OrderBy(i => i.CategoryId).ThenBy(i => i.Name), pageIndex, pageSize);
+            return _mapper.Map<Pagination<IngredientModel>>(ingredients);
+        }
+
         public async Task<IngredientModel?> GetDetailIngredient(Guid id)
         {
             Ingredient? ingredient = await Repository.GetById(id);
@@ -73,7 +83,6 @@ namespace FridgeBE.Infrastructure.Services
                 ingredient.ImageUrl = filePath;
             }
             await Repository.UpdateAndSaveAsync(ingredient);
-            await _unitOfWork.SaveChangeAsync();
             return _mapper.Map<IngredientModel>(ingredient);
         }
 

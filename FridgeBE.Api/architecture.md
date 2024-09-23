@@ -1,7 +1,7 @@
 ﻿in repository
 - Avoid returning `IQueryable`, because it breaks encapsulation and leaks data access responsiblities out of the repository abstraction where it belongs
 	+ Add additional methods to the Repository as needed
-- Return `IReadOnlyLis`t when return read-only list
+- Return `IReadOnlyList` when return read-only list
 	+ Common operations: indexing, iteration, and Count retrieval
 - Return `IEnumerable` when using In-Memory Operations
 	+ Common operations: filtering, sorting, and mapping in-memory after data retrieval
