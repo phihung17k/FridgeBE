@@ -54,13 +54,15 @@ namespace FridgeBE.Infrastructure.Services
 
         public async Task<Pagination<IngredientModel>> GetPagingIngredientList(int pageIndex = 1, int pageSize = 10)
         {
-            Pagination<Ingredient> ingredients = await Repository.GetPaginationAsync(null, ingredients => ingredients.OrderBy(i => i.CategoryId).ThenBy(i => i.Name), pageIndex, pageSize);
+            Pagination<Ingredient> ingredients = await Repository.GetPaginationAsync(orderBy: ingredients => ingredients.OrderBy(i => i.CategoryId).ThenBy(i => i.Name),                                                                                pageIndex: pageIndex, 
+                                                                                     pageSize: pageSize,
+                                                                                     includes: ingredients => ingredients.Category);
             return _mapper.Map<Pagination<IngredientModel>>(ingredients);
         }
 
         public async Task<IngredientModel?> GetDetailIngredient(Guid id)
         {
-            Ingredient? ingredient = await Repository.GetById(id);
+            Ingredient? ingredient = await Repository.GetById(i => i.Id == id, includes: i => i.Category);
 
             if (ingredient == null)
                 return new IngredientModel(HttpStatusCode.NotFound, ErrorMessages.IngredientNotFound);

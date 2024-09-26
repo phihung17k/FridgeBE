@@ -1,10 +1,10 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using FridgeBE.Core.Entities.Common;
+﻿using FridgeBE.Core.Entities.Common;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Models;
 using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq.Expressions;
 
 namespace FridgeBE.Infrastructure.Repositories
@@ -20,6 +20,36 @@ namespace FridgeBE.Infrastructure.Repositories
         {
             _context = dbContext;
             _dbSet = _context.Set<T>();
+        }
+
+        private static IQueryable<T> where(IQueryable<T> dataSet, Expression<Func<T, bool>>? predicate)
+        {
+            if (predicate == null)
+                return dataSet;
+
+            return dataSet.Where(predicate);
+        }
+
+        private static IQueryable<T> include(IQueryable<T> dataSet, Expression<Func<T, object>>[]? includes)
+        {
+            if (includes.IsNullOrEmpty())
+                return dataSet;
+
+            foreach (Expression<Func<T, object>> include in includes!)
+            {
+                dataSet = dataSet.Include(include);
+            }
+            return dataSet;
+        }
+
+        private static IQueryable<T> paginate(IQueryable<T> dataSet, int pageIndex = 1, int pageSize = 10, bool isTrack = false)
+        {
+            if (pageIndex < 1 || pageIndex > pageSize)
+                return dataSet;
+
+            dataSet = dataSet.Skip((pageIndex - 1) * pageSize)
+                             .Take(pageSize);
+            return isTrack ? dataSet : dataSet.AsNoTracking();
         }
 
         public virtual T Create(T entity)
@@ -109,9 +139,12 @@ namespace FridgeBE.Infrastructure.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public IList<T> GetAll()
+        public async Task<T?> GetById(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[]? includes)
         {
-            return _dbSet.ToList();
+            IQueryable<T> result = _dbSet;
+            result = where(result, predicate);
+            result = include(result, includes);
+            return await result.FirstOrDefaultAsync();
         }
 
         public virtual async Task<IList<T>> GetAllAsync()
@@ -119,80 +152,51 @@ namespace FridgeBE.Infrastructure.Repositories
             return await _dbSet.ToListAsync();
         }
 
-        public virtual List<T> Get(Expression<Func<T, bool>> predicate)
-        {
-            return _dbSet.Where(predicate).ToList();
-        }
-
-        //IEnumerable = _dbSet.Where(Func<T, bool> predicate)
-        //IQueryable = _dbSet.Where(Expression<Func<T, bool>> predicate)
-        public virtual async Task<List<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, params Expression<Func<T, object>>[] includes)
-        {
-            IQueryable<T> result = _dbSet;
-
-            if(predicate != null)
-            {
-                result = _dbSet.Where(predicate);
-            }
-
-            foreach (var include in includes)
-            {
-                result = result.Include(include);
-            }
-
-            if(orderBy != null)
-            {
-                return await orderBy(result).ToListAsync();
-            }
-
-            return await result.ToListAsync();
-        }
-
-        public IReadOnlyList<T> GetReadOnlyList()
-        {
-            return _dbSet.AsNoTracking().ToList();
-        }
-
         public async Task<IReadOnlyList<T>> GetReadOnlyListAsync()
         {
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Pagination<T>> GetPaginationAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, int pageIndex = 1, int pageSize = 10)
+        //IEnumerable = _dbSet.Where(Func<T, bool> predicate)
+        //IQueryable = _dbSet.Where(Expression<Func<T, bool>> predicate)
+        public virtual async Task<List<T>> GetAsync(
+            Expression<Func<T, bool>>? predicate = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            params Expression<Func<T, object>>[]? includes)
         {
-            IQueryable<T> filteredItems = _dbSet;
-            if (predicate != null)
-            {
-                filteredItems = _dbSet.Where(predicate);
-            }
+            IQueryable<T> result = _dbSet;
+            result = where(result, predicate);
+            result = include(result, includes);
+
+            return await result.ToListAsync();
+        }
+
+        public async Task<Pagination<T>> GetPaginationAsync(
+            Expression<Func<T, bool>>? predicate = null, 
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, 
+            int pageIndex = 1, 
+            int pageSize = 10, 
+            params Expression<Func<T, object>>[]? includes)
+        {
+            IQueryable<T> items = _dbSet;
+            items = where(items, predicate);
 
             if (orderBy != null)
             {
-                filteredItems = orderBy(filteredItems);
+                items = orderBy(items);
             }
 
-            //Task<int> itemCountTask = filteredItems.CountAsync();
-            //Task<List<T>> itemsTask = filteredItems.Skip((pageIndex - 1) * pageSize)
-            //                                       .Take(pageSize)
-            //                                       .AsNoTracking()
-            //                                       .ToListAsync();
-            //await Task.WhenAll(itemCountTask, itemsTask);
+            int itemCount = await items.CountAsync();
+            items = paginate(items, pageIndex, pageSize);
+            items = include(items, includes);
 
-            int itemCountTask = await filteredItems.CountAsync();
-            List<T> itemsTask = await filteredItems.Skip((pageIndex - 1) * pageSize)
-                                                   .Take(pageSize)
-                                                   .AsNoTracking()
-                                                   .ToListAsync();
-
-            var result = new Pagination<T>
+            return new Pagination<T>
             {
-                TotalItemsCount = itemCountTask,
+                TotalItemsCount = itemCount,
                 PageSize = pageSize,
                 PageIndex = pageIndex,
-                Items = itemsTask
+                Items = items
             };
-
-            return result;
         }
     }
 }

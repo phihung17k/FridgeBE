@@ -11,6 +11,7 @@ namespace FridgeBE.Core.Mapping
         { 
             CreateMap<Ingredient, IngredientModel>()
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.ImageUrl))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ReverseMap();
             CreateMap<Recipe, RecipeModel>().ReverseMap();
             CreateMap<Step, StepModel>().ReverseMap();

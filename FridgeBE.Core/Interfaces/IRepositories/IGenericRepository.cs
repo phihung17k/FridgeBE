@@ -22,14 +22,15 @@ namespace FridgeBE.Core.Interfaces.IRepositories
         Task<bool> DeleteRangeAndSaveAsync(IEnumerable<T> entity);
 
         Task<T?> GetById<Tid>(Tid id);
-        IList<T> GetAll();
+        Task<T?> GetById(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[]? includes);
         Task<IList<T>> GetAllAsync();
-
-        List<T> Get(Expression<Func<T, bool>> predicate);
         Task<List<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, params Expression<Func<T, object>>[] includes);
-
-        IReadOnlyList<T> GetReadOnlyList();
         Task<IReadOnlyList<T>> GetReadOnlyListAsync();
-        Task<Pagination<T>> GetPaginationAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, int pageIndex = 1, int pageSize = 10);
+        Task<Pagination<T>> GetPaginationAsync(
+            Expression<Func<T, bool>>? predicate = null, 
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, 
+            int pageIndex = 1, 
+            int pageSize = 10,
+            params Expression<Func<T, object>>[]? includes);
     }
 }

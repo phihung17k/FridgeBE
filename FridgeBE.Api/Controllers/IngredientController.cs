@@ -20,16 +20,16 @@ namespace FridgeBE.Api.Controllers
         }
 
         // GET: api/<IngredientController>
-        [HttpGet("all")]
+        //[HttpGet("all")]
         //[Permission(View.AllIngredients, Edit.Ingredient)]
-        public async Task<ActionResult<IReadOnlyList<IngredientModel>>> GetAll()
-        {
-            IReadOnlyList<IngredientModel> results = await _service.GetAll();
-            return Ok(results);
-        }
+        //public async Task<ActionResult<IReadOnlyList<IngredientModel>>> GetAll()
+        //{
+        //    IReadOnlyList<IngredientModel> results = await _service.GetAll();
+        //    return Ok(results);
+        //}
 
         // GET: api/<IngredientController>
-        [HttpGet]
+        [HttpGet("list")]
         //[Permission(View.AllIngredients, Edit.Ingredient)]
         public async Task<ActionResult<Pagination<IngredientModel>>> GetPagingIngredientList(int pageIndex = 1, int pageSize = 10)
         {
