@@ -1,10 +1,8 @@
-﻿using FridgeBE.Api.Authorization;
-using FridgeBE.Core.Interfaces.IServices;
+﻿using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Models;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
 using Microsoft.AspNetCore.Mvc;
-using static FridgeBE.Api.Constants.PermissionConstants;
 
 namespace FridgeBE.Api.Controllers
 {
