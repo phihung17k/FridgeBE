@@ -1,4 +1,5 @@
 ﻿using FridgeBE.Api.Authorization;
+using FridgeBE.Api.Extensions;
 using FridgeBE.Api.Filters;
 using FridgeBE.Api.Middlewares;
 using FridgeBE.Core;
@@ -6,6 +7,8 @@ using FridgeBE.Core.ValueObjects;
 using FridgeBE.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -136,6 +139,16 @@ namespace FridgeBE.Api
 
             // init storage
             app.InitCategoryStorage();
+
+            var httpsSection = _configuration.GetSection("HttpServer:Endpoints:Https");
+            if (httpsSection.Exists())
+            {
+                var httpsEndpoint = new EndpointConfiguration();
+                httpsSection.Bind(httpsEndpoint);
+                app.UseRewriter(new RewriteOptions().AddRedirectToHttps(
+                    statusCode: env.IsDevelopment() ? StatusCodes.Status302Found : StatusCodes.Status301MovedPermanently,
+                    sslPort: httpsEndpoint.Port));
+            }
         }
     }
 }
