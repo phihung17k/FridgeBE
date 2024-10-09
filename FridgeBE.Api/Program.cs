@@ -2,6 +2,7 @@ using FridgeBE.Api;
 
 
 var builder = WebApplication.CreateBuilder(args);
+//builder.WebHost.UseUrls("http://localhost:5003", "https://localhost:5004");
 
 //Console.WriteLine(typeof(Ingredient));
 //MySqlConnection MyCon = new MySqlConnection(builder.Configuration.GetConnectionString("Fridge"));

@@ -82,7 +82,13 @@ namespace FridgeBE.Infrastructure.Utils
         public static Dictionary<string, List<Tuple<string, string>>> ReadIngredientsExcelFile()
         {
             Dictionary<string, List<Tuple<string, string>>> dic = [];
-            string filePath = @"C:\android\test_dotnet\FridgeBE\Food.xlsx";
+            // AppDomain.CurrentDomain.BaseDirectory = ".\FridgeBE\FridgeBE.Api\bin\Debug\net8.0\"
+            // Directory.GetCurrentDirectory() = ".\FridgeBE\FridgeBE.Api"
+            string directoryPath = Directory.GetCurrentDirectory();
+            int fridgeBeApiDirectoryIndex = directoryPath.IndexOf("FridgeBE.Api");
+            directoryPath = directoryPath[..fridgeBeApiDirectoryIndex];
+            //directoryPath = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName;
+            string filePath = Path.Combine(directoryPath, "Food.xlsx");
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filePath, false))
             {
                 WorkbookPart workbookPart = spreadsheet.WorkbookPart ?? spreadsheet.AddWorkbookPart();

@@ -6,8 +6,10 @@ using FridgeBE.Core.ValueObjects;
 using FridgeBE.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
 namespace FridgeBE.Api
@@ -35,12 +37,11 @@ namespace FridgeBE.Api
 
             JwtOptions jwtOptions = _configuration.GetSection("JwtOptions").Get<JwtOptions>()!;
             services.AddSingleton(jwtOptions);
-
             services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtBearerOptions =>
+                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, (JwtBearerOptions options) =>
                     {
-                        jwtBearerOptions.SaveToken = true;
-                        jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+                        options.SaveToken = true;
+                        options.TokenValidationParameters = new TokenValidationParameters
                         {
                             ValidateIssuer = true,
                             ValidateAudience = true,
@@ -62,7 +63,6 @@ namespace FridgeBE.Api
             // TryAdd Authorization services in https://github.com/dotnet/aspnetcore/blob/c925f99cddac0df90ed0bc4a07ecda6b054a0b02/src/Security/Authorization/Core/src/AuthorizationServiceCollectionExtensions.cs#L21
             services.AddAuthorization();
             //services.AddAuthorization(a => a.InvokeHandlersAfterFailure = false);
-
             //services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddCoreServices(_configuration);
@@ -70,9 +70,9 @@ namespace FridgeBE.Api
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(setupAction =>
+            services.AddSwaggerGen((SwaggerGenOptions options) =>
             {
-                setupAction.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
                     Description = "JWT Authorization header using the Bearer scheme",
@@ -82,7 +82,7 @@ namespace FridgeBE.Api
                     BearerFormat = "JWT"
                 });
 
-                setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -102,6 +102,17 @@ namespace FridgeBE.Api
             //{
             //    httpRedirectionOptions.HttpsPort = 443;
             //});
+
+            services.AddCors((CorsOptions options) =>
+            {
+                options.AddDefaultPolicy((CorsPolicyBuilder policy) =>
+                {
+                    //policy.WithOrigins("http://localhost:9877")
+                    //      .AllowAnyHeader()
+                    //      .AllowAnyMethod();
+                    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -121,9 +132,10 @@ namespace FridgeBE.Api
                 app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
