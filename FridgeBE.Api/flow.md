@@ -53,6 +53,7 @@ Flow Token
 - AspNetCoreModuleV2 in C:\Program Files\IIS\Asp.Net Core Module\V2, by install dotnet hosting server
 - Other module is installed by **appCmd** or **Turn Windows features on or off**
 
+## Docker, .NET and DB
 ### .NET and Docker:
 Dockerfile uses Docker multiple stage:
 - Build: `dotnet/sdk`. The image contains the **.NET SDK (include CLI)**
@@ -63,16 +64,58 @@ Build and deploy manually
 2. Run app: `dotnet published\aspnetapp.dll` and browse to `http://localhost:[local port]` to test the home page.
 3. Deploy to Docker
 	- Create **Dockerfile**
-		```docker
+		```Dockerfile
 			FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime			WORKDIR /app				COPY published/ ./
 			ENTRYPOINT ["dotnet", "aspnetapp.dll"]
 		```
 	- Build image: `docker build .`. Aliases: `docker image build`, `docker build`, `docker builder build`
-		+ OR build specific image: `docker build -t [image name] .`. build image with tag name at build context `.` 
+		+ OR build with name image: `docker build -t [image name] .`. build image with tag name at build context `.` 
 		  (Build context is the directory containing the Dockerfile and any files needed for the image)
 	- Run container from image: `docker run -it --rm -p [local port]:[container port] --name [container name] [image name]`
 		+ `-it`: Allocate a pseudo-TTY and keep it open even if not attached
 		+ `--rm`: Remove the container when it exits
 	- Go to `http://localhost:[local port` in a browser to test the app.
 
+### DB and Docker:
+Start mysql: `docker run --name [container name] -p [local port]:[container port] -e MYSQL_ROOT_PASSWORD=[pass] -e MYSQL_DATABASE=[DB name] -d mysql:latest`
 
+### .NET and DB
+1. Add `ConnectionStrings` in appsetting.json (FridgeBE.Api)
+2. Add Connection in `Startup` (FridgeBE.Infrastructure)
+
+1. 
+### Compose up .NET and DB in Docker
+Follow: https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-9.0
+[Maybe] Setting on top in **appsettings.json**
+```
+"http_ports": "5091",
+"https_ports": "7160",
+```
+1. Create Self-signed development certificates
+```
+dotnet dev-certs https -ep ./https/aspnetapp.pfx -p YourPassword
+dotnet dev-certs https --trust
+```
+2. Add properties `ports`, `environment`, `volumes` in **compose.yaml**
+```yaml
+services:
+  server:
+    build:
+      # context: defines either a path to a directory containing a Dockerfile, default (.)
+      context: .
+      # target: defines the stage to build as defined inside a multi-stage Dockerfile
+      target: final
+      # dockerfile: sets an alternate Dockerfile
+      # dockerfile: Dockerfile
+    ports:
+      - "7160:7160" # Map HTTPS port
+      - "5091:5091" # Map HTTP port
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:7160;http://+:5091
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=YourPassword
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ./https:/https # Mount the certificate
+```
+3. Build: `docker-compose up --build -d`

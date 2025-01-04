@@ -1,6 +1,7 @@
 ﻿using FridgeBE.Core.Constants;
 using FridgeBE.Core.Entities;
 using FridgeBE.Infrastructure.Utils;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FridgeBE.Infrastructure.Data.DataSeeding
 {

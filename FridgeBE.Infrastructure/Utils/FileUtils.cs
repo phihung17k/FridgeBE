@@ -84,11 +84,21 @@ namespace FridgeBE.Infrastructure.Utils
             Dictionary<string, List<Tuple<string, string>>> dic = [];
             // AppDomain.CurrentDomain.BaseDirectory = ".\FridgeBE\FridgeBE.Api\bin\Debug\net8.0\"
             // Directory.GetCurrentDirectory() = ".\FridgeBE\FridgeBE.Api"
-            string directoryPath = Directory.GetCurrentDirectory();
-            int fridgeBeApiDirectoryIndex = directoryPath.IndexOf("FridgeBE.Api");
-            directoryPath = directoryPath[..fridgeBeApiDirectoryIndex];
+
+            //string directoryPath = Directory.GetCurrentDirectory();
+            //Console.WriteLine($"Directory: {directoryPath}");
+            //int fridgeBeApiDirectoryIndex = directoryPath.IndexOf("FridgeBE.Api");
+            //directoryPath = directoryPath[..fridgeBeApiDirectoryIndex];
+
             //directoryPath = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName;
-            string filePath = Path.Combine(directoryPath, "Food.xlsx");
+
+            string filePath = Path.Combine(AppContext.BaseDirectory, "Data", "Food.xlsx");
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine("FileUtils.ReadIngredientsExcelFile(): The seeding file is not found");
+                return dic;
+            }
+            Console.WriteLine("FileUtils.ReadIngredientsExcelFile(): The seeding file is Found");
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filePath, false))
             {
                 WorkbookPart workbookPart = spreadsheet.WorkbookPart ?? spreadsheet.AddWorkbookPart();

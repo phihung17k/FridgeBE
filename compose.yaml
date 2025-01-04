@@ -10,11 +10,22 @@
 services:
   server:
     build:
+      # context: defines either a path to a directory containing a Dockerfile, default (.)
       context: .
+      # target: defines the stage to build as defined inside a multi-stage Dockerfile
       target: final
-      dockerfile: Dockerfile
+      # dockerfile: sets an alternate Dockerfile
+      # dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - 7160:7160 # Map HTTPS port
+      - 5091:5091 # Map HTTP port
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:7160;http://+:5091
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=YourPassword
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ./https:/https # Mount the certificate
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the
@@ -22,30 +33,33 @@ services:
 # to set the database password. You must create `db/password.txt` and add
 # a password of your choosing to it before running `docker compose up`.
     depends_on:
-      - mysql
-    #     condition: service_healthy
+      mysql:
+        condition: service_healthy
+    # Use the entrypoint script for container startup
+    # command: ["/app/entrypoint.sh"]
   mysql:
-    image: mysql:latest
-    restart: always
+    image: mysql:8.0
+    # restart: always
 #     user: postgres
 #     secrets:
 #       - db-password
-    # volumes:
-    #   - mysql-data:/var/lib/mysql/data
     environment:
-      - MYSQL_DATABAS=fridge
+      - MYSQL_DATABASE=fridge
       - MYSQL_ROOT_PASSWORD=pass
     ports:
-      - 57779:3006
-#     expose:
-#       - 5432
-#     healthcheck:
-#       test: [ "CMD", "pg_isready" ]
-#       interval: 10s
-#       timeout: 5s
-#       retries: 5
-# volumes:
-#   mysql-data:
+       # Default MYSQL port 3306
+      - 57779:3306
+    volumes:
+      - fridge-data:/var/lib/mysql
+    expose:
+      - 5432
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+volumes:
+  fridge-data:
 # secrets:
 #   db-password:
 #     file: db/password.txt
