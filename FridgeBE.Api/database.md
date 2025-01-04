@@ -1,6 +1,6 @@
 ﻿pull mysql
 - `docker run --name test-mysql -p 57779:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=fridge -d mysql:tag`
-- host port : container port
+- host port/local port : container port
 
 run container with volume
 - `docker run --name test-mysql -dp 57779:3306 --mount type=volume,src=vol-mysql,target=/etc/todos -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=fridge mysql`
