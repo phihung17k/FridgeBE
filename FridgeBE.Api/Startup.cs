@@ -110,7 +110,7 @@ namespace FridgeBE.Api
                     //policy.WithOrigins("http://localhost:9877")
                     //      .AllowAnyHeader()
                     //      .AllowAnyMethod();
-                    policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+                    policy.SetIsOriginAllowed(origin => true/*new Uri(origin).Host == "localhost"*/);
                 });
             });
         }

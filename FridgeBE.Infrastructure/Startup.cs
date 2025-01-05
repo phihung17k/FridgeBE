@@ -26,7 +26,7 @@ namespace FridgeBE.Infrastructure
             //services.AddDbContextPool<ApplicationDbContext>(option =>
             services.AddDbContext<ApplicationDbContext>(option =>
             {
-                option.UseMySql(configuration.GetConnectionString("Fridge"), ServerVersion.Parse("8.4.0"), sqlOptionsBuilder =>
+                option.UseMySql(configuration.GetConnectionString("Fridge"), ServerVersion.Parse("8.0.40"), sqlOptionsBuilder =>
                 {
                     //sqlOptionsBuilder.EnableRetryOnFailure(maxRetryCount: 2);
                     //sqlOptionsBuilder.MigrationsAssembly(nameof(FridgeBE.Infrastructure));
@@ -36,7 +36,7 @@ namespace FridgeBE.Infrastructure
                 option.LogTo(Console.WriteLine, LogLevel.Debug, DbContextLoggerOptions.DefaultWithLocalTime);
 
                 IWebHostEnvironment env = services.BuildServiceProvider().GetRequiredService<IWebHostEnvironment>();
-                if (env.IsDevelopment())
+                if (env.IsDevelopment() || env.IsProduction())
                 {
                     option.EnableSensitiveDataLogging();
                     option.EnableDetailedErrors();
