@@ -35,32 +35,50 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    # Use the entrypoint script for container startup
-    # command: ["/app/entrypoint.sh"]
+    # networks:
+    #   - fridge-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Set host.docker.internal to host-gateway
+
   mysql:
     image: mysql:8.0
     # restart: always
-#     user: postgres
-#     secrets:
-#       - db-password
     environment:
       - MYSQL_DATABASE=fridge
       - MYSQL_ROOT_PASSWORD=pass
     ports:
        # Default MYSQL port 3306
-      - 57779:3306
+      - 3306:3306
     volumes:
       - fridge-data:/var/lib/mysql
-    expose:
-      - 5432
+    # expose:
+    #   - 3306
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 3
+    # networks:
+    #   - fridge-network
+
+  migrator:
+    # reuse a prebuilt SDK image in Dockerfile
+    # image: mcr.microsoft.com/dotnet/sdk:8.0
+    build:
+      context: .
+      target: build
+    # volumes:
+    #   - ./Data:/app/Data
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: /bin/sh -c "dotnet tool restore && dotnet ef database update --project /source/FridgeBE.Api/FridgeBE.Api.csproj"
+    # networks:
+    #   - fridge-network
+    
 volumes:
   fridge-data:
-# secrets:
-#   db-password:
-#     file: db/password.txt
 
+# networks:
+#   fridge-network:
+#     driver: bridge

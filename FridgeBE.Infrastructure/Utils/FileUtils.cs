@@ -92,13 +92,13 @@ namespace FridgeBE.Infrastructure.Utils
 
             //directoryPath = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName;
 
-            string filePath = Path.Combine(AppContext.BaseDirectory, "Data", "Food.xlsx");
+            string filePath = Path.Combine(AppContext.BaseDirectory, "Food.xlsx");
             if (!File.Exists(filePath))
             {
-                Console.WriteLine("FileUtils.ReadIngredientsExcelFile(): The seeding file is not found");
+                //Console.WriteLine($"FileUtils.ReadIngredientsExcelFile(): The seeding file is not found. {filePath}");
                 return dic;
             }
-            Console.WriteLine("FileUtils.ReadIngredientsExcelFile(): The seeding file is Found");
+            //Console.WriteLine($"FileUtils.ReadIngredientsExcelFile(): The seeding file is Found. {filePath}");
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filePath, false))
             {
                 WorkbookPart workbookPart = spreadsheet.WorkbookPart ?? spreadsheet.AddWorkbookPart();

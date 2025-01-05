@@ -12,7 +12,7 @@
 # https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
 
 # Create a stage for building the application.
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 
 COPY . /source
 
@@ -27,8 +27,9 @@ ARG TARGETARCH
 # If TARGETARCH is "amd64", replace it with "x64" - "x64" is .NET's canonical name for this and "amd64" doesn't
 #   work in .NET 6.0.
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
-    dotnet publish -a x64 --use-current-runtime --self-contained false -o /app
-#RUN dotnet publish -a x64 --use-current-runtime --self-contained false -o /app
+    dotnet publish -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app
+#RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
+    #dotnet publish -a x64 --use-current-runtime --self-contained false -o /app
 
 # If you need to enable globalization and time zones:
 # https://github.com/dotnet/dotnet-docker/blob/main/samples/enable-globalization.md
@@ -50,19 +51,7 @@ WORKDIR /app
 COPY --from=build /app .
 
 # Copy the Excel file from the local "Data" directory to the container's /app/Data directory
-COPY ./Data/Food.xlsx /app/Data/Food.xlsx
-
-## Install .NET EF tools
-##RUN dotnet tool install --global dotnet-ef
-##
-### Set the PATH for global tools
-##ENV PATH="${PATH}:/root/.dotnet/tools"
-#
-## Copy the entrypoint script
-#COPY ./entrypoint.sh entrypoint.sh
-#
-## Make the entrypoint script executable
-#RUN chmod +x entrypoint.sh
+#COPY ./Data/Food.xlsx /app/Data/Food.xlsx
 
 # Switch to a non-privileged user (defined in the base image) that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
@@ -70,6 +59,3 @@ COPY ./Data/Food.xlsx /app/Data/Food.xlsx
 USER $APP_UID
 
 ENTRYPOINT ["dotnet", "FridgeBE.Api.dll"]
-
-# Automatically apply migrations before starting the app
-#RUN dotnet ef database update --project ./FridgeBE.Api/FridgeBE.Api.csproj

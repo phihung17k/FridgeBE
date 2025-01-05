@@ -96,26 +96,12 @@ Follow: https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-ht
 dotnet dev-certs https -ep ./https/aspnetapp.pfx -p YourPassword
 dotnet dev-certs https --trust
 ```
-2. Add properties `ports`, `environment`, `volumes` in **compose.yaml**
-```yaml
-services:
-  server:
-    build:
-      # context: defines either a path to a directory containing a Dockerfile, default (.)
-      context: .
-      # target: defines the stage to build as defined inside a multi-stage Dockerfile
-      target: final
-      # dockerfile: sets an alternate Dockerfile
-      # dockerfile: Dockerfile
-    ports:
-      - "7160:7160" # Map HTTPS port
-      - "5091:5091" # Map HTTP port
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:7160;http://+:5091
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=YourPassword
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-    volumes:
-      - ./https:/https # Mount the certificate
-```
+2. In **appsettings.json**
+- Add `Server=host.docker.internal` in connection string to identity Mysql host in docker
+3. In **compose.yaml** 
+- Set server: target final stage in Dockerfile
+	- Add **ports**, **environment** and **volumes** to mount certificate
+	- Add **extra_hosts** = `host.docker.internal:host-gateway`
+- Set migrator: to execute migration in target build stage 
 3. Build: `docker-compose up --build -d`
+- To remove image and container: `docker-compose down --volumes --remove-orphans`
