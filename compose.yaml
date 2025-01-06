@@ -20,7 +20,7 @@ services:
       - 7160:7160 # Map HTTPS port
       - 5091:5091 # Map HTTP port
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:7160;http://+:5091
       - ASPNETCORE_Kestrel__Certificates__Default__Password=YourPassword
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
@@ -67,6 +67,8 @@ services:
     build:
       context: .
       target: build
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production # for migration using ConnectionStrings in appettings.Production.json
     # volumes:
     #   - ./Data:/app/Data
     depends_on:

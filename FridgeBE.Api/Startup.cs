@@ -17,6 +17,7 @@ namespace FridgeBE.Api
     public class Startup
     {
         private IConfiguration _configuration { get; set; }
+        private const string _myAllowSpecificOrigins = "myAllowSpecificOrigins";
 
         public Startup(IConfiguration configuration)
         {
@@ -100,17 +101,22 @@ namespace FridgeBE.Api
 
             //services.AddHttpsRedirection(httpRedirectionOptions =>
             //{
-            //    httpRedirectionOptions.HttpsPort = 443;
+            //    httpRedirectionOptions.HttpsPort = 7160;
             //});
 
             services.AddCors((CorsOptions options) =>
             {
-                options.AddDefaultPolicy((CorsPolicyBuilder policy) =>
+                options.AddPolicy(_myAllowSpecificOrigins, (CorsPolicyBuilder policy) =>
                 {
-                    //policy.WithOrigins("http://localhost:9877")
+                    //policy.WithOrigins("http://localhost", 
+                    //                   "https://localhost")
                     //      .AllowAnyHeader()
                     //      .AllowAnyMethod();
                     policy.SetIsOriginAllowed(origin => true/*new Uri(origin).Host == "localhost"*/);
+                    //policy.AllowAnyOrigin()
+                    //      .AllowAnyHeader()
+                    //      .AllowAnyMethod()
+                    //      .AllowCredentials();
                 });
             });
         }
@@ -135,7 +141,7 @@ namespace FridgeBE.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors();
+            app.UseCors(_myAllowSpecificOrigins);
 
             app.UseAuthentication();
             app.UseAuthorization();
