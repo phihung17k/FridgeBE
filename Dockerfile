@@ -50,6 +50,13 @@ WORKDIR /app
 # Copy everything needed to run the app from the "build" stage.
 COPY --from=build /app .
 
+# Copy certificates
+COPY ./https/localhost.pfx /app/https/localhost.pfx
+#COPY ./https/localhost-key.pem /app/https/localhost-key.pem
+
+# Expose ports
+#EXPOSE 5091 7160
+
 # Copy the Excel file from the local "Data" directory to the container's /app/Data directory
 #COPY ./Data/Food.xlsx /app/Data/Food.xlsx
 

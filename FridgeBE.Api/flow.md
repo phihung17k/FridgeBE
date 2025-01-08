@@ -107,6 +107,7 @@ dotnet dev-certs https --trust
 	- If host port (local machine) used 3306, change other port (ex: 3307) in **compose** file, **appsettings.json** and **appsettings.Development.json** 
 3. Build: `docker-compose up --build -d`
 - To remove image and container: `docker-compose down --volumes --remove-orphans`\
+
 Setup Emulator trust local HTTPS API (export `.crt` file and install it in the emulator)
 - `dotnet dev-certs https -ep ./https/aspnetapp.pfx -p YourPassword`
 - install OpenSSL: cmd 
@@ -115,3 +116,28 @@ Setup Emulator trust local HTTPS API (export `.crt` file and install it in the e
 - `openssl pkcs12 -in ./https/aspnetapp.pfx -clcerts -nokeys -out ./https/aspnetapp.crt -passin pass:YourPassword`
 - Find `adb` location in `C:\Users\[user]\AppData\Local\Android\Sdk\platform-tools`
 - `adb push ./https/aspnetapp.crt /sdcard/Download/`
+If not success:
+- Install [chocolatey](https://docs.chocolatey.org/en-us/choco/setup/#install-with-cmdexe) (admin)
+- Install mkcert: `choco install mkcert` [mkcert](https://github.com/FiloSottile/mkcert?tab=readme-ov-file)
+- Create a Local Root CA: `mkcert -install`
+- Generate a Certificate for localhost: `mkcert localhost` => **localhost.pem** (certificate) and **localhost-key.pem** (key)
+- Get .pfx: `openssl pkcs12 -export -out localhost.pfx -inkey localhost-key.pem -in localhost.pem` and type pass: yourpassword
+- Update Dockerfile in final stage (runtime aspnet): `COPY ./https/localhost.pfx /app/https/localhost.pfx`
+- In Program.cs, add:
+	```c#
+	  // Load the Kestrel configuration from appsettings.json
+		builder.WebHost.ConfigureKestrel(options =>
+		{
+			options.ListenAnyIP(5091); // HTTP
+			options.ListenAnyIP(7160, listenOptions =>
+			{
+				Console.WriteLine($"Location in Docker {AppContext.BaseDirectory}"); // /app/ at final stage in Dockerfile
+				listenOptions.UseHttps("https/localhost.pfx", "yourpassword");
+			});
+		});
+	```
+- Ensure volumes in compose file: `localhost.pfx` file is available `./https:/https`
+- `docker-compose up --build`
+- Copy certificate to device: `adb push localhost.pfx /sdcard/localhost.pfx` or Pull to screen device
+- Find `localhost.pfx` in File folder and click to install
+- Toast `The certificate is installed`

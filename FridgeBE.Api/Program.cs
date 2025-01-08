@@ -11,6 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 //        listenOptions.UseHttps("/https/aspnetapp.pfx", "YourPassword");
 //    });
 //});
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5091); // HTTP
+    options.ListenAnyIP(7160, listenOptions =>
+    {
+        Console.WriteLine($"Location in Docker {AppContext.BaseDirectory}"); // /app/ at final stage in Dockerfile
+        listenOptions.UseHttps("https/localhost.pfx", "yourpassword");
+    });
+});
 
 //builder.WebHost.UseUrls("http://localhost:5003", "https://localhost:5004");
 
