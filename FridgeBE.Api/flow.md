@@ -102,6 +102,16 @@ dotnet dev-certs https --trust
 - Set server: target final stage in Dockerfile
 	- Add **ports**, **environment** and **volumes** to mount certificate
 	- Add **extra_hosts** = `host.docker.internal:host-gateway`
-- Set migrator: to execute migration in target build stage 
+- Set migrator: to execute migration in target build stage
+	- To migration in docker: set ConnectionStrings Server and Migrator in Product ENV (port 3306)
+	- If host port (local machine) used 3306, change other port (ex: 3307) in **compose** file, **appsettings.json** and **appsettings.Development.json** 
 3. Build: `docker-compose up --build -d`
-- To remove image and container: `docker-compose down --volumes --remove-orphans`
+- To remove image and container: `docker-compose down --volumes --remove-orphans`\
+Setup Emulator trust local HTTPS API (export `.crt` file and install it in the emulator)
+- `dotnet dev-certs https -ep ./https/aspnetapp.pfx -p YourPassword`
+- install OpenSSL: cmd 
+	- winget search openssl
+	- winget install [openssl name]
+- `openssl pkcs12 -in ./https/aspnetapp.pfx -clcerts -nokeys -out ./https/aspnetapp.crt -passin pass:YourPassword`
+- Find `adb` location in `C:\Users\[user]\AppData\Local\Android\Sdk\platform-tools`
+- `adb push ./https/aspnetapp.crt /sdcard/Download/`

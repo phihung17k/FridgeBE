@@ -42,13 +42,13 @@ services:
 
   mysql:
     image: mysql:8.0
-    # restart: always
+    restart: always  # Restart if it crashes
     environment:
       - MYSQL_DATABASE=fridge
       - MYSQL_ROOT_PASSWORD=pass
     ports:
        # Default MYSQL port 3306
-      - 3306:3306
+      - 3307:3306
     volumes:
       - fridge-data:/var/lib/mysql
     # expose:
