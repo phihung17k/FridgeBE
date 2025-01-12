@@ -22,8 +22,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:7160;http://+:5091
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=YourPassword
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=yourpassword
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/localhost.pfx
     volumes:
       - ./https:/https # Mount the certificate
 # The commented out section below is an example of how to define a PostgreSQL

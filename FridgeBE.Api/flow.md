@@ -74,7 +74,7 @@ Build and deploy manually
 	- Run container from image: `docker run -it --rm -p [local port]:[container port] --name [container name] [image name]`
 		+ `-it`: Allocate a pseudo-TTY and keep it open even if not attached
 		+ `--rm`: Remove the container when it exits
-	- Go to `http://localhost:[local port` in a browser to test the app.
+	- Go to `http://localhost:[local port]` in a browser to test the app.
 
 ### DB and Docker:
 Start mysql: `docker run --name [container name] -p [local port]:[container port] -e MYSQL_ROOT_PASSWORD=[pass] -e MYSQL_DATABASE=[DB name] -d mysql:latest`

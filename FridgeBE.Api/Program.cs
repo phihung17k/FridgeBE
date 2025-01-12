@@ -4,13 +4,6 @@ using FridgeBE.Api;
 var builder = WebApplication.CreateBuilder(args);
 
 // Kestrel Configuration
-//builder.WebHost.ConfigureKestrel(options =>
-//{
-//    options.ListenAnyIP(7160, listenOptions =>
-//    {
-//        listenOptions.UseHttps("/https/aspnetapp.pfx", "YourPassword");
-//    });
-//});
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(5091); // HTTP
