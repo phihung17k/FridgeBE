@@ -26,7 +26,7 @@ namespace FridgeBE.Core.Interfaces.IRepositories
         Task<IList<T>> GetAllAsync();
         Task<List<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, params Expression<Func<T, object>>[] includes);
         Task<IReadOnlyList<T>> GetReadOnlyListAsync();
-        Task<Pagination<T>> GetPaginationAsync(
+        Task<Pagination<T>?> GetPaginationAsync(
             Expression<Func<T, bool>>? predicate = null, 
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, 
             int pageIndex = 1, 

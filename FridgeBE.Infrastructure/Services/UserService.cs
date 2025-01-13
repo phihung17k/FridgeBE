@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FridgeBE.Core.Entities;
+using FridgeBE.Core.Exceptions;
 using FridgeBE.Core.Interfaces.IRepositories;
 using FridgeBE.Core.Interfaces.IServices;
 using FridgeBE.Core.Interfaces.IUtils;
@@ -39,10 +40,10 @@ namespace FridgeBE.Infrastructure.Services
         public async Task<RegisterResponseModel> CreateUser(UserRegisterRequest request)
         {
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-                return new RegisterResponseModel(HttpStatusCode.BadRequest, "Email and Password are required");
+                return new RegisterResponseModel(HttpStatusCode.BadRequest, ErrorMessages.EmailPasswordRequire);
 
             if (!Regex.IsMatch(request.Email, "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"))
-                return new RegisterResponseModel(HttpStatusCode.BadRequest, "Email is invalid");
+                return new RegisterResponseModel(HttpStatusCode.BadRequest, ErrorMessages.EmailInvalid);
 
             // if email is existed, send mail to confirm "Somebody tried to register your account.
             //      If this was you please ignore this mail. If you forgot your password, use the forgot password link on the login page"
@@ -50,7 +51,7 @@ namespace FridgeBE.Infrastructure.Services
             UserAccount? userAccount = UserAccountRepository.GetByEmail(request.Email);
 
             if (userAccount != null)
-                return new RegisterResponseModel(HttpStatusCode.BadRequest, "Unrecognized email or password");
+                return new RegisterResponseModel(HttpStatusCode.BadRequest, ErrorMessages.UnrecognizedEmailPassword);
 
             PasswordUtils.HashPassword(request.Password, out string passwordHash, out string passwordSalt);
 
@@ -72,16 +73,16 @@ namespace FridgeBE.Infrastructure.Services
         public async Task<LoginResponseModel> SignInByPassword(UserLoginRequest request)
         {
             if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-                return new LoginResponseModel(HttpStatusCode.BadRequest, "Email and Password are required");
+                return new LoginResponseModel(HttpStatusCode.BadRequest, ErrorMessages.EmailPasswordRequire);
 
             UserAccount? userAccount = UserAccountRepository.GetByEmail(request.Email, includeUserLogin: true);
             if (userAccount == null)
-                return new LoginResponseModel(HttpStatusCode.BadRequest, "Unrecognized email or password");
+                return new LoginResponseModel(HttpStatusCode.BadRequest, ErrorMessages.UnrecognizedEmailPassword);
 
             bool result = PasswordUtils.VerifyPasswordHash(request.Password, userAccount.UserLogin.PasswordHash, userAccount.UserLogin.PasswordSalt);
 
             if (!result)
-                return new LoginResponseModel(HttpStatusCode.Unauthorized, "Invalid email or password");
+                return new LoginResponseModel(HttpStatusCode.Unauthorized, ErrorMessages.InvalidEmailPassword);
 
             // create token
             Tuple<string, DateTime> accessToken = _tokenUtils.GenerateAccessToken(userAccount.Id.ToString(), userAccount.Name, userAccount.UserLogin.Email);
@@ -102,12 +103,12 @@ namespace FridgeBE.Infrastructure.Services
             UserAccount? userAccount = UserAccountRepository.GetByToken(request.UserId, request.RefreshToken);
 
             if (userAccount == null)
-                return new RefreshTokenModel(HttpStatusCode.BadRequest, "User is not existed");
+                return new RefreshTokenModel(HttpStatusCode.BadRequest, ErrorMessages.UserNotExisted);
 
             bool isValidToken = await _tokenUtils.ValidateRefreshToken(request.RefreshToken);
 
             if (!isValidToken)
-                return new RefreshTokenModel(HttpStatusCode.BadRequest, "Invalid token");
+                return new RefreshTokenModel(HttpStatusCode.BadRequest, ErrorMessages.InvalidToken);
 
             Tuple<string, DateTime> accessToken = _tokenUtils.GenerateAccessToken(userAccount.Id.ToString(), userAccount.Name, userAccount.UserLogin.Email);
 

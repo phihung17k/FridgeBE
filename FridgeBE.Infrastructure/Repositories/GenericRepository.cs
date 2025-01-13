@@ -5,6 +5,7 @@ using FridgeBE.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace FridgeBE.Infrastructure.Repositories
@@ -44,9 +45,6 @@ namespace FridgeBE.Infrastructure.Repositories
 
         private static IQueryable<T> paginate(IQueryable<T> dataSet, int pageIndex = 1, int pageSize = 10, bool isTrack = false)
         {
-            if (pageIndex < 1 || pageIndex > pageSize)
-                return dataSet;
-
             dataSet = dataSet.Skip((pageIndex - 1) * pageSize)
                              .Take(pageSize);
             return isTrack ? dataSet : dataSet.AsNoTracking();
@@ -171,13 +169,17 @@ namespace FridgeBE.Infrastructure.Repositories
             return await result.ToListAsync();
         }
 
-        public async Task<Pagination<T>> GetPaginationAsync(
+        public async Task<Pagination<T>?> GetPaginationAsync(
             Expression<Func<T, bool>>? predicate = null, 
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, 
             int pageIndex = 1, 
             int pageSize = 10, 
             params Expression<Func<T, object>>[]? includes)
         {
+            int pageCount = (int) Math.Ceiling((double) _dbSet.Count() / pageSize);
+            if (pageIndex < 1 || pageIndex > pageCount)
+                return null;
+
             IQueryable<T> items = _dbSet;
             items = where(items, predicate);
 

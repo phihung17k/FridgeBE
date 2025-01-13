@@ -54,9 +54,12 @@ namespace FridgeBE.Infrastructure.Services
 
         public async Task<Pagination<IngredientModel>> GetPagingIngredientList(int pageIndex = 1, int pageSize = 10)
         {
-            Pagination<Ingredient> ingredients = await Repository.GetPaginationAsync(orderBy: ingredients => ingredients.OrderBy(i => i.CategoryId).ThenBy(i => i.Name),                                                                            pageIndex: pageIndex, 
-                                                                                     pageSize: pageSize,
-                                                                                     includes: ingredients => ingredients.Category);
+            Pagination<Ingredient>? ingredients = await Repository.GetPaginationAsync(orderBy: ingredients => ingredients.OrderBy(i => i.CategoryId).ThenBy(i => i.Name),                                                                                 pageIndex: pageIndex, 
+                                                                                      pageSize: pageSize,
+                                                                                      includes: ingredients => ingredients.Category);
+            if (ingredients == null)
+                return new Pagination<IngredientModel>(HttpStatusCode.BadRequest, ErrorMessages.InvalidPageIndexOrPageSize);
+
             return _mapper.Map<Pagination<IngredientModel>>(ingredients);
         }
 
