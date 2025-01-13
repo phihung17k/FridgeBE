@@ -93,7 +93,7 @@ Follow: https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-ht
 ```
 1. Create Self-signed development certificates
 ```
-dotnet dev-certs https -ep ./https/aspnetapp.pfx -p YourPassword
+dotnet dev-certs https -ep ./https/aspnetapp.pfx -p yourpassword
 dotnet dev-certs https --trust
 ```
 2. In **appsettings.json**
@@ -109,14 +109,14 @@ dotnet dev-certs https --trust
 - To remove image and container: `docker-compose down --volumes --remove-orphans`\
 
 Setup Emulator trust local HTTPS API (export `.crt` file and install it in the emulator)
-- `dotnet dev-certs https -ep ./https/aspnetapp.pfx -p YourPassword`
+- `dotnet dev-certs https -ep ./https/aspnetapp.pfx -p yourpassword`
 - install OpenSSL: cmd 
 	- winget search openssl
 	- winget install [openssl name]
-- `openssl pkcs12 -in ./https/aspnetapp.pfx -clcerts -nokeys -out ./https/aspnetapp.crt -passin pass:YourPassword`
+- `openssl pkcs12 -in ./https/aspnetapp.pfx -clcerts -nokeys -out ./https/aspnetapp.crt -passin pass:yourpassword`
 - Find `adb` location in `C:\Users\[user]\AppData\Local\Android\Sdk\platform-tools`
 - `adb push ./https/aspnetapp.crt /sdcard/Download/`
-If not success:
+If not success (re-install cert if use the other host device):
 - Install [chocolatey](https://docs.chocolatey.org/en-us/choco/setup/#install-with-cmdexe) (admin)
 - Install mkcert: `choco install mkcert` [mkcert](https://github.com/FiloSottile/mkcert?tab=readme-ov-file)
 - Create a Local Root CA: `mkcert -install`

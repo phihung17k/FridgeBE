@@ -9,8 +9,9 @@ builder.WebHost.ConfigureKestrel(options =>
     options.ListenAnyIP(5091); // HTTP
     options.ListenAnyIP(7160, listenOptions =>
     {
-        Console.WriteLine($"Location in Docker {AppContext.BaseDirectory}"); // /app/ at final stage in Dockerfile
-        listenOptions.UseHttps("https/localhost.pfx", "yourpassword");
+        //Console.WriteLine($"Location in Docker {AppContext.BaseDirectory}"); // /app/ at final stage in Dockerfile
+        //listenOptions.UseHttps("../https/localhost.pfx", "yourpassword");
+        listenOptions.UseHttps("../https/localhost.pfx", "yourpassword");
     });
 });
 

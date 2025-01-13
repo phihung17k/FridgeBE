@@ -732,3 +732,4 @@ obj/
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,visualstudiocode,aspnetcore,dotnetcore,csharp
 /FridgeBE.Api/Files/*
 /FridgeBE.Api/Properties/published
+/https/*

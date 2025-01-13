@@ -51,7 +51,7 @@ WORKDIR /app
 COPY --from=build /app .
 
 # Copy certificates
-COPY ./https/localhost.pfx /app/https/localhost.pfx
+#COPY ./https/localhost.pfx /app/https/localhost.pfx
 #COPY ./https/localhost-key.pem /app/https/localhost-key.pem
 
 # Expose ports
