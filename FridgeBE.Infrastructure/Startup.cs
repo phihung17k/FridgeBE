@@ -47,10 +47,12 @@ namespace FridgeBE.Infrastructure
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IIngredientService, IngredientService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             services.AddScoped<IUserAccountRepository, UserAccountRepository>();
             services.AddScoped<IUserLoginRepository, UserLoginRepository>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
+            services.AddScoped<ICategoryRepository, CategoryResponsitory>();
 
             services.AddScoped<IPasswordHasher<UserAccount>, PasswordHasher<UserAccount>>();
 

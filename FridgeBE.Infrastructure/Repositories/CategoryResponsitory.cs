@@ -4,9 +4,9 @@ using FridgeBE.Infrastructure.Data;
 
 namespace FridgeBE.Infrastructure.Repositories
 {
-    public class IngredientRepository : GenericRepository<Ingredient>, IIngredientRepository
+    public class CategoryResponsitory : GenericRepository<Category>, ICategoryRepository
     {
-        public IngredientRepository(ApplicationDbContext dbContext) : base(dbContext)
+        public CategoryResponsitory(ApplicationDbContext dbContext) : base(dbContext)
         { }
     }
 }

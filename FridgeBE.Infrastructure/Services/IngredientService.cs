@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
 using FridgeBE.Core.Entities;
 using FridgeBE.Core.Exceptions;
 using FridgeBE.Core.Interfaces.IRepositories;
@@ -9,7 +7,6 @@ using FridgeBE.Core.Models;
 using FridgeBE.Core.Models.RequestModels;
 using FridgeBE.Core.Models.ResponseModels;
 using FridgeBE.Infrastructure.Utils;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 

@@ -22,6 +22,7 @@ namespace FridgeBE.Infrastructure.Repositories
                 { typeof(Ingredient), new IngredientRepository(_context) },
                 { typeof(UserAccount), new UserAccountRepository(_context) },
                 { typeof(UserLogin), new UserLoginRepository(_context) },
+                { typeof(Category), new CategoryResponsitory(_context) }
             };
         }
 

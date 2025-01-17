@@ -29,6 +29,9 @@ namespace FridgeBE.Core.Mapping
             CreateMap<Pagination<Ingredient>, Pagination<IngredientModel>>()
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
                 .ReverseMap();
+
+            CreateMap<Category, CategoryResponseModel>()
+                .ReverseMap();
         }
     }
 }

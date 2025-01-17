@@ -2,6 +2,6 @@
 
 namespace FridgeBE.Core.Interfaces.IRepositories
 {
-    public interface IIngredientRepository : IGenericRepository<Ingredient>
+    public interface ICategoryRepository : IGenericRepository<Category>
     { }
 }
