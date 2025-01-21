@@ -23,7 +23,7 @@ namespace FridgeBE.Infrastructure.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        private static IQueryable<T> where(IQueryable<T> dataSet, Expression<Func<T, bool>>? predicate)
+        protected static IQueryable<T> Where(IQueryable<T> dataSet, Expression<Func<T, bool>>? predicate)
         {
             if (predicate == null)
                 return dataSet;
@@ -31,7 +31,7 @@ namespace FridgeBE.Infrastructure.Repositories
             return dataSet.Where(predicate);
         }
 
-        private static IQueryable<T> include(IQueryable<T> dataSet, Expression<Func<T, object>>[]? includes)
+        protected static IQueryable<T> Include(IQueryable<T> dataSet, Expression<Func<T, object>>[]? includes)
         {
             if (includes.IsNullOrEmpty())
                 return dataSet;
@@ -43,7 +43,7 @@ namespace FridgeBE.Infrastructure.Repositories
             return dataSet;
         }
 
-        private static IQueryable<T> paginate(IQueryable<T> dataSet, int pageIndex = 1, int pageSize = 10, bool isTrack = false)
+        protected static IQueryable<T> Paginate(IQueryable<T> dataSet, int pageIndex = 1, int pageSize = 10, bool isTrack = false)
         {
             dataSet = dataSet.Skip((pageIndex - 1) * pageSize)
                              .Take(pageSize);
@@ -140,8 +140,8 @@ namespace FridgeBE.Infrastructure.Repositories
         public async Task<T?> GetById(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[]? includes)
         {
             IQueryable<T> result = _dbSet;
-            result = where(result, predicate);
-            result = include(result, includes);
+            result = Where(result, predicate);
+            result = Include(result, includes);
             return await result.FirstOrDefaultAsync();
         }
 
@@ -163,8 +163,8 @@ namespace FridgeBE.Infrastructure.Repositories
             params Expression<Func<T, object>>[]? includes)
         {
             IQueryable<T> result = _dbSet;
-            result = where(result, predicate);
-            result = include(result, includes);
+            result = Where(result, predicate);
+            result = Include(result, includes);
 
             return await result.ToListAsync();
         }
@@ -176,12 +176,12 @@ namespace FridgeBE.Infrastructure.Repositories
             int pageSize = 10, 
             params Expression<Func<T, object>>[]? includes)
         {
-            int pageCount = (int) Math.Ceiling((double) _dbSet.Count() / pageSize);
+            IQueryable<T> items = _dbSet;
+            items = Where(items, predicate);
+
+            int pageCount = (int) Math.Ceiling((double) items.Count() / pageSize);
             if (pageIndex < 1 || pageIndex > pageCount)
                 return null;
-
-            IQueryable<T> items = _dbSet;
-            items = where(items, predicate);
 
             if (orderBy != null)
             {
@@ -189,8 +189,8 @@ namespace FridgeBE.Infrastructure.Repositories
             }
 
             int itemCount = await items.CountAsync();
-            items = paginate(items, pageIndex, pageSize);
-            items = include(items, includes);
+            items = Paginate(items, pageIndex, pageSize);
+            items = Include(items, includes);
 
             return new Pagination<T>
             {

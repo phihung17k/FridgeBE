@@ -27,11 +27,19 @@ namespace FridgeBE.Api.Controllers
         //}
 
         // GET: api/<IngredientController>
-        [HttpGet("list")]
+        [HttpGet()]
         //[Permission(View.AllIngredients, Edit.Ingredient)]
         public async Task<ActionResult<Pagination<IngredientModel>>> GetPagingIngredientList(int pageIndex = 1, int pageSize = 10)
         {
             Pagination<IngredientModel> results = await _service.GetPagingIngredientList(pageIndex, pageSize);
+            return Ok(results);
+        }
+
+        [HttpGet("by-category")]
+        //[Permission(View.AllIngredients, Edit.Ingredient)]
+        public async Task<ActionResult<Pagination<IngredientModel>>> GetPagingIngredientList([FromQuery] int categoryId, int pageIndex = 1, int pageSize = 10)
+        {
+            Pagination<IngredientModel> results = await _service.GetPagingIngredientListByCategoryId(categoryId, pageIndex, pageSize);
             return Ok(results);
         }
 

@@ -12,6 +12,9 @@ namespace FridgeBE.Core.Interfaces.IServices
         Task<IngredientModel?> GetDetailIngredient(Guid id);
         Task<IReadOnlyList<IngredientModel>> GetAll();
         Task<Pagination<IngredientModel>> GetPagingIngredientList(int pageIndex = 1, int pageSize = 10);
+
+        Task<Pagination<IngredientModel>> GetPagingIngredientListByCategoryId(int categoryId, int pageIndex = 1, int pageSize = 10);
+
         Task<IngredientModel> UpdateIngredient(Guid id, IngredientUpdateRequest request);
         Task<IngredientModel> DeleteIngredient(Guid id);
     }

@@ -51,9 +51,27 @@ namespace FridgeBE.Infrastructure.Services
 
         public async Task<Pagination<IngredientModel>> GetPagingIngredientList(int pageIndex = 1, int pageSize = 10)
         {
-            Pagination<Ingredient>? ingredients = await Repository.GetPaginationAsync(orderBy: ingredients => ingredients.OrderBy(i => i.CategoryId).ThenBy(i => i.Name),                                                                                 pageIndex: pageIndex, 
-                                                                                      pageSize: pageSize,
-                                                                                      includes: ingredients => ingredients.Category);
+            Pagination<Ingredient>? ingredients = await Repository.GetPaginationAsync(
+                orderBy: ingredients => ingredients.OrderBy(i => i.CategoryId).ThenBy(i => i.Name),                                                                              
+                pageIndex: pageIndex, 
+                pageSize: pageSize,
+                includes: ingredient => ingredient.Category);
+
+            if (ingredients == null)
+                return new Pagination<IngredientModel>(HttpStatusCode.BadRequest, ErrorMessages.InvalidPageIndexOrPageSize);
+
+            return _mapper.Map<Pagination<IngredientModel>>(ingredients);
+        }
+
+        public async Task<Pagination<IngredientModel>> GetPagingIngredientListByCategoryId(int categoryId, int pageIndex = 1, int pageSize = 10)
+        {
+            Pagination<Ingredient>? ingredients = await Repository.GetPaginationIncludeFirstAsync(
+                predicate: ingredient => ingredient.CategoryId == categoryId,
+                orderBy: ingredients => ingredients.OrderBy(i => i.Name),
+                pageIndex: pageIndex,
+                pageSize: pageSize,
+                includes: ingredient => ingredient.Category);
+
             if (ingredients == null)
                 return new Pagination<IngredientModel>(HttpStatusCode.BadRequest, ErrorMessages.InvalidPageIndexOrPageSize);
 
