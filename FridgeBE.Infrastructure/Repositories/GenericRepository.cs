@@ -178,6 +178,7 @@ namespace FridgeBE.Infrastructure.Repositories
         {
             IQueryable<T> items = _dbSet;
             items = Where(items, predicate);
+            items = Include(items, includes);
 
             int pageCount = (int) Math.Ceiling((double) items.Count() / pageSize);
             if (pageIndex < 1 || pageIndex > pageCount)
@@ -190,7 +191,6 @@ namespace FridgeBE.Infrastructure.Repositories
 
             int itemCount = await items.CountAsync();
             items = Paginate(items, pageIndex, pageSize);
-            items = Include(items, includes);
 
             return new Pagination<T>
             {

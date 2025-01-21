@@ -65,7 +65,7 @@ namespace FridgeBE.Infrastructure.Services
 
         public async Task<Pagination<IngredientModel>> GetPagingIngredientListByCategoryId(int categoryId, int pageIndex = 1, int pageSize = 10)
         {
-            Pagination<Ingredient>? ingredients = await Repository.GetPaginationIncludeFirstAsync(
+            Pagination<Ingredient>? ingredients = await Repository.GetPaginationAsync(
                 predicate: ingredient => ingredient.CategoryId == categoryId,
                 orderBy: ingredients => ingredients.OrderBy(i => i.Name),
                 pageIndex: pageIndex,

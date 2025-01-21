@@ -29,19 +29,21 @@ namespace FridgeBE.Api.Controllers
         // GET: api/<IngredientController>
         [HttpGet()]
         //[Permission(View.AllIngredients, Edit.Ingredient)]
-        public async Task<ActionResult<Pagination<IngredientModel>>> GetPagingIngredientList(int pageIndex = 1, int pageSize = 10)
+        public async Task<ActionResult<Pagination<IngredientModel>>> GetPagingIngredientList([FromQuery] int? categoryId, int pageIndex = 1, int pageSize = 10)
         {
-            Pagination<IngredientModel> results = await _service.GetPagingIngredientList(pageIndex, pageSize);
+            Pagination<IngredientModel> results = categoryId == null ? 
+                await _service.GetPagingIngredientList(pageIndex, pageSize) :
+                await _service.GetPagingIngredientListByCategoryId(categoryId!.Value, pageIndex, pageSize);
             return Ok(results);
         }
 
-        [HttpGet("by-category")]
-        //[Permission(View.AllIngredients, Edit.Ingredient)]
-        public async Task<ActionResult<Pagination<IngredientModel>>> GetPagingIngredientList([FromQuery] int categoryId, int pageIndex = 1, int pageSize = 10)
-        {
-            Pagination<IngredientModel> results = await _service.GetPagingIngredientListByCategoryId(categoryId, pageIndex, pageSize);
-            return Ok(results);
-        }
+        //[HttpGet("by-category")]
+        ////[Permission(View.AllIngredients, Edit.Ingredient)]
+        //public async Task<ActionResult<Pagination<IngredientModel>>> GetPagingIngredientList(int pageIndex = 1, int pageSize = 10)
+        //{
+        //    Pagination<IngredientModel> results = await _service.GetPagingIngredientListByCategoryId(categoryId, pageIndex, pageSize);
+        //    return Ok(results);
+        //}
 
         // GET api/<IngredientController>/5
         [HttpGet("{id}")]
