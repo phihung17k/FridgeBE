@@ -180,6 +180,15 @@ namespace FridgeBE.Infrastructure.Repositories
             items = Where(items, predicate);
             items = Include(items, includes);
 
+            if (items.IsNullOrEmpty())
+                return new Pagination<T>
+                {
+                    TotalItemsCount = 0,
+                    PageSize = pageSize,
+                    PageIndex = 0,
+                    Items = []
+                };
+
             int pageCount = (int) Math.Ceiling((double) items.Count() / pageSize);
             if (pageIndex < 1 || pageIndex > pageCount)
                 return null;

@@ -15,7 +15,7 @@ namespace FridgeBE.Core.Models.ResponseModels
         public string LocalName { get; set; } = null!;
         public string? Description { get; set; }
         public string? Image { get; set; }
-        public string CategoryName { get; set; }
+        public CategoryResponseModel Category { get; set; }
         public List<RecipeModel> Recipes { get; set; } = [];
     }
 }
